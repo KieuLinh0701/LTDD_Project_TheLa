@@ -29,6 +29,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -42,4 +46,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation(libs.circleImageView)
+    implementation(libs.jdbc)
+    implementation(libs.jtds)
+    implementation(libs.mail)
 }

@@ -32,7 +32,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/ettName"
+            android:id="@+id/edName"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="12dp"
@@ -55,8 +55,8 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/ettEmail"
-            android:layout_width="326dp"
+            android:id="@+id/edEmail"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/editext_background"
@@ -78,7 +78,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/ettPassword"
+            android:id="@+id/edPass"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="12dp"
@@ -101,7 +101,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/ettRePassword"
+            android:id="@+id/edRePass"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="12dp"
@@ -114,7 +114,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/txvForgotPassword"
+            android:id="@+id/tvLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
@@ -125,7 +125,7 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button"
+            android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
