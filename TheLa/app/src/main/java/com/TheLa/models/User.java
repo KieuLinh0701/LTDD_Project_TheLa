@@ -11,39 +11,13 @@ public class User implements Serializable {
     private String address;
     private String phone;
     private String role;
-    private Boolean isDelete;
     private Boolean isActive;
 
     public User(){
 
     }
-    public User(String name, String email, String password, String role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-    public User(String name, String email, String password, String code, String role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.code = code;
-        this.role = role;
-    }
-    public User(String name, String email, String password, String code,
-                String address, String phone, String role, Boolean isDelete, Boolean isActive) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.code = code;
-        this.address = address;
-        this.phone = phone;
-        this.role = role;
-        this.isDelete = isDelete;
-        this.isActive = isActive;
-    }
     public User(Long userId, String name, String email, String password, String code,
-                String address, String phone, String role, Boolean isDelete, Boolean isActive) {
+                String address, String phone, String role, Boolean isActive) {
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -52,7 +26,17 @@ public class User implements Serializable {
         this.address = address;
         this.phone = phone;
         this.role = role;
-        this.isDelete = isDelete;
+        this.isActive = isActive;
+    }
+
+    public User(String name, String email, String password, String code, String address, String phone, String role, Boolean isActive) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.code = code;
+        this.address = address;
+        this.phone = phone;
+        this.role = role;
         this.isActive = isActive;
     }
 
@@ -118,14 +102,6 @@ public class User implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public Boolean getDelete() {
-        return isDelete;
-    }
-
-    public void setDelete(Boolean delete) {
-        isDelete = delete;
     }
 
     public Boolean getActive() {

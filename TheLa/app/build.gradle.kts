@@ -33,6 +33,13 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packaging {
+        resources {
+            excludes += "META-INF/NOTICE.md"
+            excludes += "META-INF/LICENSE.md"
+        }
+    }
 }
 
 dependencies {
@@ -48,5 +55,6 @@ dependencies {
     implementation(libs.circleImageView)
     implementation(libs.jdbc)
     implementation(libs.jtds)
-    implementation(libs.mail)
+    implementation(libs.androidMail)
+    implementation(libs.androidActivation)
 }

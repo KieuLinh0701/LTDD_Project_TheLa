@@ -1,10 +1,13 @@
 package com.TheLa.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.util.Patterns;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -12,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
 import com.TheLa.presenter.UserPresenter;
-import com.TheLa.repository.UserRepository;
+import com.TheLa.services.SendMail;
 import com.TheLa.utils.Constant;
 import com.example.TheLa.databinding.ActivityRegisterBinding;
 
@@ -36,7 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        binding.btnRegister.setOnClickListener(v -> btnRegisterClick());
+        binding.btnRegister.setOnClickListener(
+                v -> btnRegisterClick()
+        );
     }
 
     private void btnRegisterClick() {
@@ -50,22 +55,39 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Tạo user từ dữ liệu nhập vào
+        String code = SendMail.getRandom();
+
         User user = new User(
-                name, // Tên người dùng từ trường nhập liệu
+                name,
                 email,
                 password,
-                null,  // Code (không nhập, để null)
-                null,  // Address (không nhập, để null)
-                null,  // Phone (không nhập, để null)
-                Constant.ROLE_CUSTOMER, // Vai trò mặc định là "customer"
-                false, // isDelete
-                false  // isActivate
+                code,
+                null,
+                null,
+                Constant.ROLE_CUSTOMER,
+                false
         );
-        userPresenter.addUser(user);
 
-//        User user = new User(name, email, password, Constant.ROLE_CUSTOMER);
-//        userPresenter.addUser(user);
+        String subject = "Confirm Your Account";
+        String message = "Hi " + name + ",\n" +
+                "Use the code below to confirm your account:\n\n" +
+                code + "\n\n" +
+                "Thanks for joining us!";
+
+        if (SendMail.sendEmail(email, subject, message)) {
+            if (userPresenter.addUser(user)) {
+                Intent intent = new Intent(RegisterActivity.this, VerificationAccountActivity.class);
+                intent.putExtra("user", user);
+                intent.putExtra("feature", "Register");
+                startActivity(intent);
+            } else {
+                Toast.makeText(RegisterActivity.this, "An error occurred while sending the email. Please check your email address and try again!", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.d("RegisterActivity", "addUser returned false");
+
+        }
+
     }
 
     private boolean isValidInput(String name, String email, String password, String rePassword) {
@@ -94,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
             binding.edPass.setError("Please enter your password!");
             binding.edPass.requestFocus();
             isValid = false;
-        } else if (isPasswordStrong(password)) {
+        } else if (!isPasswordStrong(password)) {
             isValid = false;
         }
 

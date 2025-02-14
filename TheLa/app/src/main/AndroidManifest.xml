@@ -35,11 +35,19 @@
         </activity>
 
         <activity
-            android:name="com.TheLa.activities.RegistrationVerificationActivity"
+            android:name="com.TheLa.activities.VerificationAccountActivity"
             android:exported="true">
         </activity>
 
+        <activity
+            android:name="com.TheLa.activities.ForgotPasswordEmailActivity"
+            android:exported="true">
+        </activity>
 
+        <activity
+            android:name="com.TheLa.activities.ForgotPasswordActivity"
+            android:exported="true">
+        </activity>
 
 
 

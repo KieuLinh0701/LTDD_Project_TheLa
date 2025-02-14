@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
 
@@ -57,7 +56,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void tvForgotPasswordClick() {
-
+        Intent intent = new Intent(LoginActivity.this, ForgotPasswordEmailActivity.class);
+        startActivity(intent);
     }
 
     private void btnLoginClick() {
@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         User user = userPresenter.getUserFindByEmail(email);
-        if (user != null && user.getPassword() != null  && !user.getDelete() && user.getPassword().equals(password)) {
+        if (user != null && user.getPassword() != null && user.getPassword().equals(password)) {
             if (user.getActive()) {
                 SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(LoginActivity.this);
                 sharedPreferenceManager.setStringValue(SharedPreferenceManager.AUTH_TOKEN, "mock_auth_token");
@@ -78,14 +78,16 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 String code = SendMail.getRandom();
                 user.setCode(code);
-                //userPresenter.updateUser(user);
-                String subject = "Login Verification Code";
-                String message = "Your verification code is: " + code + "\n" +
-                        "Please enter this code to proceed.";
+                String subject = "Confirm Your Account";
+                String message = "Hi " + user.getName() + ",\n" +
+                        "Use the code below to confirm your account:\n\n" +
+                        code + "\n\n" +
+                        "Thanks for joining us!";
 
                 if (SendMail.sendEmail(email, subject, message)) {
-                    Intent intent = new Intent(LoginActivity.this, RegistrationVerificationActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, VerificationAccountActivity.class);
                     intent.putExtra("user", user);
+                    intent.putExtra("feature", "Login");
                     startActivity(intent);
                 } else {
                     Toast.makeText(LoginActivity.this, "Failed to send the verification email. Please try again later!", Toast.LENGTH_SHORT).show();
@@ -97,20 +99,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isValidInput(String email, String password) {
+        boolean isValid = true;
         if (email.isEmpty()) {
             binding.edEmail.setError("Please enter your email!");
             binding.edEmail.requestFocus();
-            return false;
+            isValid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.edEmail.setError("Invalid email!");
             binding.edEmail.requestFocus();
-            return false;
+            isValid = false;
         } else if (password.isEmpty()) {
             binding.edPass.setError("Please enter your password!");
             binding.edPass.requestFocus();
-            return false;
+            isValid = false;
         }
-        return true;
+        return isValid;
     }
 
     private void switchToHomeActivity() {

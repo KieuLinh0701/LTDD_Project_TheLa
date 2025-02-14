@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#f2f2f2">
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
@@ -23,7 +22,7 @@
 
         <View
             android:id="@+id/view3"
-            android:layout_width="107dp"
+            android:layout_width="134dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
@@ -36,13 +35,13 @@
             <View
                 android:id="@+id/view7"
                 android:layout_width="match_parent"
-                android:layout_height="39dp" />
+                android:layout_height="53dp" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Forgot\nPassword"
+                android:text="Create\nAccount"
                 android:textColor="#ffffff"
                 android:textSize="30dp"
                 android:textStyle="bold" />
@@ -50,9 +49,10 @@
 
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="700dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
@@ -62,6 +62,7 @@
             android:id="@+id/textView3"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:text="Code"
             android:textColor="#000000"
             android:textSize="20sp"
@@ -84,26 +85,30 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/ettEmail2"
+                android:id="@+id/ettEmail1"
                 android:layout_width="45dp"
                 android:layout_height="50dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/editext_background"
                 android:ems="10"
+                android:maxLength="1"
+                android:textAlignment="center"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#707070"
-                android:textSize="18sp"
-                android:layout_marginEnd="5dp"/>
+                android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/edEmail"
+                android:id="@+id/ettEmail2"
                 android:layout_width="45dp"
                 android:layout_height="50dp"
-                android:background="@drawable/editext_background"
-                android:ems="10"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
+                android:background="@drawable/editext_background"
+                android:ems="10"
+                android:maxLength="1"
+                android:textAlignment="center"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#707070"
@@ -113,65 +118,73 @@
                 android:id="@+id/ettEmail3"
                 android:layout_width="45dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/editext_background"
                 android:ems="10"
+                android:maxLength="1"
+                android:textAlignment="center"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#707070"
-                android:textSize="18sp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"/>
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/ettEmail4"
                 android:layout_width="45dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/editext_background"
                 android:ems="10"
+                android:maxLength="1"
+                android:textAlignment="center"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#707070"
-                android:textSize="18sp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"/>
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/ettEmail5"
                 android:layout_width="45dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/editext_background"
                 android:ems="10"
+                android:maxLength="1"
+                android:textAlignment="center"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#707070"
-                android:textSize="18sp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"/>
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/ettEmail6"
                 android:layout_width="45dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/editext_background"
                 android:ems="10"
+                android:maxLength="1"
+                android:textAlignment="center"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#707070"
-                android:textSize="18sp"
-                android:layout_marginStart="5dp"/>
+                android:textSize="18sp" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnVerify"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/button_background"
-            android:text="NEXT"
+            android:text="Verify"
             android:textColor="@color/white"
             android:textSize="17dp" />
 
