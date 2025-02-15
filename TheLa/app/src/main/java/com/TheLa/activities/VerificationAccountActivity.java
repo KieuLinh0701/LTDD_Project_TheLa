@@ -16,13 +16,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
-import com.TheLa.presenter.UserPresenter;
+import com.TheLa.services.implement.UserService;
 import com.example.TheLa.databinding.ActivityVerificationAccountBinding;
 
 public class VerificationAccountActivity extends AppCompatActivity {
     ActivityVerificationAccountBinding binding;
-    UserPresenter userPresenter;
+    UserService userService;
     EditText[] otpInputs;
+    String feature;
 
 
     @Override
@@ -32,15 +33,19 @@ public class VerificationAccountActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
 
-        userPresenter = new ViewModelProvider(this).get(UserPresenter.class);
+        userService = new ViewModelProvider(this).get(UserService.class);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        if ("Login".equals(getIntent().getStringExtra("feature"))) {
+        feature = getIntent().getStringExtra("feature");
+
+        if ("Login".equals(feature)) {
             binding.title.setText("Verify\nAccount");
-        } else if ("ForgotPassword".equals(getIntent().getStringExtra("feature"))) {
+        } else if ("ForgotPassword".equals(feature)) {
             binding.title.setText("Forgot\nPassword");
+        } else if ("Register".equals(feature)) {
+            binding.title.setText("Create\nAccount");
         }
 
         otpInputs = new EditText[]{
@@ -104,8 +109,8 @@ public class VerificationAccountActivity extends AppCompatActivity {
         User user = (User) getIntent().getSerializableExtra("user");
         if (user != null && code.equals(user.getCode())) {
             user.setActive(true);
-            if (userPresenter.updateUser(user)) {
-                if ("ForgotPassword".equals(getIntent().getStringExtra("feature"))) {
+            if (userService.updateUser(user)) {
+                if ("ForgotPassword".equals(feature)) {
                     Toast.makeText(this, "Verification successful! Redirecting...", Toast.LENGTH_SHORT).show();
                     binding.getRoot().postDelayed(() -> {
                         Intent intent = new Intent(VerificationAccountActivity.this, ForgotPasswordActivity.class);
@@ -113,8 +118,7 @@ public class VerificationAccountActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish(); // Đóng activity hiện tại để không giữ nó trong ngăn xếp.
                     }, 2000);
-                } else if ("Login".equals(getIntent().getStringExtra("feature"))
-                        || "Register".equals(getIntent().getStringExtra("feature"))) {
+                } else if ("Login".equals(feature) || "Register".equals(feature)) {
                     Toast.makeText(this, "Verification successful! Redirecting to login page...", Toast.LENGTH_SHORT).show();
                     binding.getRoot().postDelayed(() -> {
                         Intent intent = new Intent(VerificationAccountActivity.this, LoginActivity.class);
@@ -130,7 +134,7 @@ public class VerificationAccountActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if ("ForgotPassword".equals(getIntent().getStringExtra("feature"))) {
+        if ("ForgotPassword".equals(feature)) {
             Intent intent = new Intent(VerificationAccountActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();

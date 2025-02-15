@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Patterns;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,16 +12,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
-import com.TheLa.presenter.UserPresenter;
-import com.TheLa.services.SendMail;
-import com.TheLa.utils.SharedPreferenceManager;
-import com.example.TheLa.R;
+import com.TheLa.services.implement.UserService;
 import com.example.TheLa.databinding.ActivityForgotpasswordBinding;
-import com.example.TheLa.databinding.ActivityLoginBinding;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     ActivityForgotpasswordBinding binding;
-    UserPresenter userPresenter;
+    UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +26,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
 
-        userPresenter = new ViewModelProvider(this).get(UserPresenter.class);
+        userService = new ViewModelProvider(this).get(UserService.class);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -55,7 +50,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         User user = (User) getIntent().getSerializableExtra("user");
         if (user != null) {
             user.setPassword(pass);
-            if (userPresenter.updateUser(user)) {
+            if (userService.updateUser(user)) {
                 Toast.makeText(this, "Password recovery successful! Redirecting to login page...", Toast.LENGTH_SHORT).show();
                 binding.getRoot().postDelayed(() -> {
                     Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);

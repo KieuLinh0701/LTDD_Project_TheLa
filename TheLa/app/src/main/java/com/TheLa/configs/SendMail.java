@@ -1,7 +1,4 @@
-package com.TheLa.services;
-
-import android.annotation.SuppressLint;
-import android.util.Log;
+package com.TheLa.configs;
 
 import java.util.Properties;
 import java.util.Random;

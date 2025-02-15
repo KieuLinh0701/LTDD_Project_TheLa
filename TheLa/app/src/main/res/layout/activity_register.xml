@@ -124,7 +124,8 @@
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="#707070"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:drawableEnd="@drawable/ic_eye_closed" />
 
         <TextView
             android:id="@+id/textViewRePassword"
@@ -147,7 +148,8 @@
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="#707070"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:drawableEnd="@drawable/ic_eye_closed"/>
 
         <TextView
             android:id="@+id/tvLogin"

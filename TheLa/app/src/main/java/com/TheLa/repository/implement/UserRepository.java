@@ -1,8 +1,9 @@
-package com.TheLa.repository;
+package com.TheLa.repository.implement;
 
 import android.util.Log;
 
 import com.TheLa.models.User;
+import com.TheLa.repository.IUserRepository;
 import com.TheLa.sqlServer.DatabaseHelper;
 
 import java.sql.Connection;
@@ -11,12 +12,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class UserRepository {
-    public boolean addUser(User user) {
+public class UserRepository implements IUserRepository {
+    @Override
+    public User addUser(User user) {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
                 String sql = "INSERT INTO users (name, email, password, code, address, phone, role, isActivate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
                 preparedStatement.setString(1, user.getName());
                 preparedStatement.setString(2, user.getEmail());
                 preparedStatement.setString(3, user.getPassword());
@@ -25,23 +28,29 @@ public class UserRepository {
                 preparedStatement.setString(6, user.getPhone());
                 preparedStatement.setString(7, user.getRole());
                 preparedStatement.setBoolean(8, user.getActive() != null ? user.getActive() : false);
+
                 int rowsAffected = preparedStatement.executeUpdate();
-                if (rowsAffected>0) {
-                    Log.w("Ket noi", "thanh cong");
+
+                if (rowsAffected > 0) {
+                    try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            Long userId = generatedKeys.getLong(1);
+                            user.setUserId(userId);
+                            return user;
+                        }
+                    }
                 }
-                else {
-                    Log.w("Ket noi", "that bai");
-                }
-                return rowsAffected > 0;
+                Log.w("Database", "Failed to add user, no rows affected");
             } else {
                 Log.w("Database", "Connection is null");
             }
         } catch (SQLException e) {
-            Log.e("Database", "Error connecting to database", e);
+            Log.e("Database", "Error adding user to database", e);
         }
-        return false;
+        return null;
     }
 
+    @Override
     public boolean updateUser(User user) {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
@@ -73,6 +82,7 @@ public class UserRepository {
         return false;
     }
 
+    @Override
     public User getUserFindByEmail(String email) {
         User user = null;
 
@@ -106,7 +116,6 @@ public class UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return user;
     }
 

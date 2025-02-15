@@ -1,12 +1,14 @@
 package com.TheLa.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
+import android.text.InputType;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,14 +16,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
-import com.TheLa.presenter.UserPresenter;
-import com.TheLa.services.SendMail;
+import com.TheLa.services.implement.UserService;
+import com.TheLa.configs.SendMail;
 import com.TheLa.utils.Constant;
+import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityRegisterBinding;
 
 public class RegisterActivity extends AppCompatActivity {
     ActivityRegisterBinding binding;
-    UserPresenter userPresenter;
+    UserService userService;
+    private boolean isPasswordVisible = false;
+    private boolean isRePasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,18 +35,78 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
 
-        userPresenter = new ViewModelProvider(this).get(UserPresenter.class);
+        userService = new ViewModelProvider(this).get(UserService.class);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        PasswordClick();
+
         addEvents();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void PasswordClick() {
+        binding.edPass.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                // Get the drawable at the end of the EditText
+                if (binding.edPass.getCompoundDrawablesRelative()[2] != null &&
+                        event.getRawX() >= (binding.edPass.getRight() -
+                                binding.edPass.getCompoundDrawablesRelative()[2].getBounds().width())) {
+                    // Toggle password visibility
+                    if (isPasswordVisible) {
+                        binding.edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        binding.edPass.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_closed, 0);
+                    } else {
+                        binding.edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        binding.edPass.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
+                    }
+                    // Move cursor to the end
+                    binding.edPass.setSelection(binding.edPass.getText().length());
+                    isPasswordVisible = !isPasswordVisible;
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        binding.edRePass.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                // Get the drawable at the end of the EditText
+                if (binding.edRePass.getCompoundDrawablesRelative()[2] != null &&
+                        event.getRawX() >= (binding.edRePass.getRight() -
+                                binding.edRePass.getCompoundDrawablesRelative()[2].getBounds().width())) {
+                    // Toggle password visibility
+                    if (isRePasswordVisible) {
+                        binding.edRePass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        binding.edRePass.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_closed, 0);
+                    } else {
+                        binding.edRePass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        binding.edRePass.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
+                    }
+                    // Move cursor to the end
+                    binding.edRePass.setSelection(binding.edRePass.getText().length());
+                    isRePasswordVisible = !isRePasswordVisible;
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     private void addEvents() {
         binding.btnRegister.setOnClickListener(
                 v -> btnRegisterClick()
         );
+
+        binding.tvLogin.setOnClickListener(
+                v -> btnLoginClick()
+        );
+    }
+
+    private void btnLoginClick() {
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
     private void btnRegisterClick() {
@@ -69,25 +134,22 @@ public class RegisterActivity extends AppCompatActivity {
         );
 
         String subject = "Confirm Your Account";
-        String message = "Hi " + name + ",\n" +
+        String message = "Hi " + user.getName() + ",\n" +
                 "Use the code below to confirm your account:\n\n" +
                 code + "\n\n" +
                 "Thanks for joining us!";
 
         if (SendMail.sendEmail(email, subject, message)) {
-            if (userPresenter.addUser(user)) {
+            User newUser = userService.addUser(user);
+            if (newUser != null) {
                 Intent intent = new Intent(RegisterActivity.this, VerificationAccountActivity.class);
-                intent.putExtra("user", user);
+                intent.putExtra("user", newUser);
                 intent.putExtra("feature", "Register");
                 startActivity(intent);
-            } else {
-                Toast.makeText(RegisterActivity.this, "An error occurred while sending the email. Please check your email address and try again!", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Log.d("RegisterActivity", "addUser returned false");
-
+            Toast.makeText(RegisterActivity.this, "An error occurred while sending the email. Please check your email address and try again!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private boolean isValidInput(String name, String email, String password, String rePassword) {
@@ -106,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity {
             binding.edEmail.setError("Invalid email!");
             binding.edEmail.requestFocus();
             isValid = false;
-        } else if (userPresenter.getUserFindByEmail(email) != null) {
+        } else if (userService.getUserFindByEmail(email) != null) {
             binding.edEmail.setError("This email is already linked to another account!");
             binding.edEmail.requestFocus();
             isValid = false;

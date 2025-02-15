@@ -13,14 +13,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
-import com.TheLa.presenter.UserPresenter;
-import com.TheLa.services.SendMail;
+import com.TheLa.services.implement.UserService;
+import com.TheLa.configs.SendMail;
 import com.example.TheLa.databinding.ActivityForgotpasswordEmailBinding;
-import com.example.TheLa.databinding.ActivityLoginBinding;
 
 public class ForgotPasswordEmailActivity extends AppCompatActivity {
     ActivityForgotpasswordEmailBinding binding;
-    UserPresenter userPresenter;
+    UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
 
-        userPresenter = new ViewModelProvider(this).get(UserPresenter.class);
+        userService = new ViewModelProvider(this).get(UserService.class);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -49,7 +48,7 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
             return;
         }
 
-        User user = userPresenter.getUserFindByEmail(email);
+        User user = userService.getUserFindByEmail(email);
         if (user != null) {
             String code = SendMail.getRandom();
             user.setCode(code);
@@ -62,7 +61,7 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
                     "The La Team";
 
             if (SendMail.sendEmail(email, subject, message)) {
-                if (userPresenter.updateUser(user)) {
+                if (userService.updateUser(user)) {
                     Intent intent = new Intent(ForgotPasswordEmailActivity.this, VerificationAccountActivity.class);
                     intent.putExtra("user", user);
                     intent.putExtra("feature", "ForgotPassword");
