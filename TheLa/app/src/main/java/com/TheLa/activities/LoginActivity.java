@@ -10,7 +10,6 @@ import android.os.StrictMode;
 import android.text.InputType;
 import android.util.Patterns;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -150,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void switchToHomeActivity() {
-        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

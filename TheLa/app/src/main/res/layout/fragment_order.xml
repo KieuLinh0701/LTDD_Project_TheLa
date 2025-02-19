@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.TheLa.fragments.OrderFragment">
+
+    <!-- TabLayout hiển thị ở trên -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/green"
+        app:tabIndicatorHeight="4dp"
+        app:tabSelectedTextColor="@color/green"
+        app:tabTextColor="@color/dark_gray"/>
+
+    <!-- ViewPager chiếm phần còn lại của màn hình -->
+    <com.TheLa.fragments.widget.CustomViewPager
+        android:id="@+id/orderViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
