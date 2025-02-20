@@ -41,11 +41,11 @@ public class LoginActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        // Kiểm tra nếu đã đăng nhập rồi, chuyển sang trang Home
-        // SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
-        // if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
-        //    switchToHomeActivity();
-        // }
+         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
+         if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
+            switchToHomeActivity();
+         }
+
         PasswordClick();
         addEvents();
     }

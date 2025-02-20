@@ -1,10 +1,10 @@
-package com.TheLa.repository;
+package com.TheLa.dao;
 
 
 import com.TheLa.models.Category;
 
 import java.util.List;
 
-public interface ICategoryRepository {
+public interface ICategoryDao {
     List<Category> getAllActiveAndNotDeletedCategories();
 }

@@ -8,9 +8,10 @@ public class Product {
     private Long productId;
     private Long categoryId;
     private String name;
+    private int price;
     private String image;
     private String description;
-    private DateTime createDate;
+    private Timestamp createDate;
     private boolean status;
     private boolean isActive;
     private boolean isDelete;
@@ -37,6 +38,14 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public String getImage() {
@@ -79,7 +88,7 @@ public class Product {
         isDelete = delete;
     }
 
-    public DateTime getCreateDate() {
+    public Timestamp getCreateDate() {
         return createDate;
     }
 

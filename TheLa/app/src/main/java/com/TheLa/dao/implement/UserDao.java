@@ -1,9 +1,9 @@
-package com.TheLa.repository.implement;
+package com.TheLa.dao.implement;
 
 import android.util.Log;
 
 import com.TheLa.models.User;
-import com.TheLa.repository.IUserRepository;
+import com.TheLa.dao.IUserDao;
 import com.TheLa.sqlServer.DatabaseHelper;
 
 import java.sql.Connection;
@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class UserRepository implements IUserRepository {
+public class UserDao implements IUserDao {
     @Override
     public User addUser(User user) {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {

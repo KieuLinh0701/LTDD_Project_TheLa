@@ -1,11 +1,9 @@
-package com.TheLa.repository.implement;
+package com.TheLa.dao.implement;
 
 import android.util.Log;
 
-import com.TheLa.models.Category;
 import com.TheLa.models.Product;
-import com.TheLa.repository.ICategoryRepository;
-import com.TheLa.repository.IProductRepository;
+import com.TheLa.dao.IProductDao;
 import com.TheLa.sqlServer.DatabaseHelper;
 
 import java.sql.Connection;
@@ -15,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductRepository implements IProductRepository {
+public class ProductDao implements IProductDao {
     @Override
     public List<Product> getAllActiveAndNotDeletedProducts() {
         List<Product> products = new ArrayList<>();
@@ -32,6 +30,7 @@ public class ProductRepository implements IProductRepository {
                         product.setProductId(resultSet.getLong("productId"));
                         product.setCategoryId(resultSet.getLong("categoryId"));
                         product.setName(resultSet.getString("name"));
+                        product.setPrice(resultSet.getInt("price"));
                         product.setImage(resultSet.getString("image"));
                         product.setDescription(resultSet.getString("description"));
                         product.setCreateDate(resultSet.getTimestamp("createDate"));
@@ -70,6 +69,7 @@ public class ProductRepository implements IProductRepository {
                         product.setProductId(resultSet.getLong("productId"));
                         product.setCategoryId(resultSet.getLong("categoryId"));
                         product.setName(resultSet.getString("name"));
+                        product.setPrice(resultSet.getInt("price"));
                         product.setImage(resultSet.getString("image"));
                         product.setDescription(resultSet.getString("description"));
                         product.setCreateDate(resultSet.getTimestamp("createDate"));
@@ -111,6 +111,7 @@ public class ProductRepository implements IProductRepository {
                         product.setProductId(resultSet.getLong("productId"));
                         product.setCategoryId(resultSet.getLong("categoryId"));
                         product.setName(resultSet.getString("name"));
+                        product.setPrice(resultSet.getInt("price"));
                         product.setImage(resultSet.getString("image"));
                         product.setDescription(resultSet.getString("description"));
                         product.setCreateDate(resultSet.getTimestamp("createDate"));
@@ -151,6 +152,7 @@ public class ProductRepository implements IProductRepository {
                             product.setProductId(resultSet.getLong("productId"));
                             product.setCategoryId(resultSet.getLong("categoryId"));
                             product.setName(resultSet.getString("name"));
+                            product.setPrice(resultSet.getInt("price"));
                             product.setImage(resultSet.getString("image"));
                             product.setDescription(resultSet.getString("description"));
                             product.setCreateDate(resultSet.getTimestamp("createDate"));

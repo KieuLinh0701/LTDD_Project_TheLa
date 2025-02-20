@@ -2,12 +2,14 @@ package com.TheLa.models;
 
 import net.sourceforge.jtds.jdbc.DateTime;
 
+import java.sql.Timestamp;
+
 public class Order {
     private long orderId;
     private long userId;
     private double totalPrice;
     private String note;
-    private DateTime orderDate;
+    private Timestamp orderDate;
     private String deliveryAddress;
     private String deliveryPhone;
     private String status;
@@ -44,11 +46,11 @@ public class Order {
         this.note = note;
     }
 
-    public DateTime getOrderDate() {
+    public Timestamp getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(DateTime orderDate) {
+    public void setOrderDate(Timestamp orderDate) {
         this.orderDate = orderDate;
     }
 
