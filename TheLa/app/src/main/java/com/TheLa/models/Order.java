@@ -1,13 +1,13 @@
 package com.TheLa.models;
 
-import java.time.LocalDateTime;
+import net.sourceforge.jtds.jdbc.DateTime;
 
 public class Order {
     private long orderId;
     private long userId;
     private double totalPrice;
     private String note;
-    private LocalDateTime orderDate;
+    private DateTime orderDate;
     private String deliveryAddress;
     private String deliveryPhone;
     private String status;
@@ -44,11 +44,11 @@ public class Order {
         this.note = note;
     }
 
-    public LocalDateTime getOrderDate() {
+    public DateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDateTime orderDate) {
+    public void setOrderDate(DateTime orderDate) {
         this.orderDate = orderDate;
     }
 

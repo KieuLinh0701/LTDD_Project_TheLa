@@ -4,13 +4,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.TheLa.fragments.order.OrderViewPagerAdapter;
+import com.TheLa.adapters.OrderViewPagerAdapter;
 import com.TheLa.fragments.widget.CustomViewPager;
 import com.example.TheLa.R;
 import com.google.android.material.tabs.TabLayout;

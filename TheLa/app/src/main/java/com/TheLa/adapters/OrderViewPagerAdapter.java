@@ -1,4 +1,4 @@
-package com.TheLa.fragments.order;
+package com.TheLa.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,10 +6,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.TheLa.fragments.HomeFragment;
-import com.TheLa.fragments.MeFragment;
-import com.TheLa.fragments.OrderFragment;
-import com.TheLa.fragments.ShopFragment;
+import com.TheLa.fragments.order.CancelledOrderFragment;
+import com.TheLa.fragments.order.CompletedOrderFragment;
+import com.TheLa.fragments.order.ProcessingOrderFragment;
 
 public class OrderViewPagerAdapter extends FragmentStatePagerAdapter {
     public OrderViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {

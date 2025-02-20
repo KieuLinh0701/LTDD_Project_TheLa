@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.TheLa.fragments.ViewPagerAdapter;
+import com.TheLa.adapters.ViewPagerAdapter;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

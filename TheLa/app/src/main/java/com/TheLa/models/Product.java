@@ -2,7 +2,7 @@ package com.TheLa.models;
 
 import net.sourceforge.jtds.jdbc.DateTime;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Product {
     private Long productId;
@@ -83,7 +83,7 @@ public class Product {
         return createDate;
     }
 
-    public void setCreateDate(DateTime createDate) {
+    public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
 }
