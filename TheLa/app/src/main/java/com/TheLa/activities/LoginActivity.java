@@ -41,10 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
-         if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
-            switchToHomeActivity();
-         }
+//         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
+//         if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
+//            switchToHomeActivity();
+//         }
 
         PasswordClick();
         addEvents();
@@ -58,22 +58,22 @@ public class LoginActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void PasswordClick() {
-        binding.edPass.setOnTouchListener((v, event) -> {
+        binding.etPassword.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 // Get the drawable at the end of the EditText
-                if (binding.edPass.getCompoundDrawablesRelative()[2] != null &&
-                        event.getRawX() >= (binding.edPass.getRight() -
-                                binding.edPass.getCompoundDrawablesRelative()[2].getBounds().width())) {
+                if (binding.etPassword.getCompoundDrawablesRelative()[2] != null &&
+                        event.getRawX() >= (binding.etPassword.getRight() -
+                                binding.etPassword.getCompoundDrawablesRelative()[2].getBounds().width())) {
                     // Toggle password visibility
                     if (isPasswordVisible) {
-                        binding.edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        binding.edPass.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_closed, 0);
+                        binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        binding.etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_closed, 0);
                     } else {
-                        binding.edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                        binding.edPass.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
+                        binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        binding.etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
                     }
                     // Move cursor to the end
-                    binding.edPass.setSelection(binding.edPass.getText().length());
+                    binding.etPassword.setSelection(binding.etPassword.getText().length());
                     isPasswordVisible = !isPasswordVisible;
                     return true;
                 }
@@ -93,8 +93,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void btnLoginClick() {
-        String email = binding.edEmail.getText().toString().trim();
-        String password = binding.edPass.getText().toString().trim();
+        String email = binding.etEmail.getText().toString().trim();
+        String password = binding.etPassword.getText().toString().trim();
 
         // Validate input
         if (!isValidInput(email, password)) {
@@ -133,16 +133,16 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isValidInput(String email, String password) {
         boolean isValid = true;
         if (email.isEmpty()) {
-            binding.edEmail.setError("Please enter your email!");
-            binding.edEmail.requestFocus();
+            binding.etEmail.setError("Please enter your email!");
+            binding.etEmail.requestFocus();
             isValid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.edEmail.setError("Invalid email!");
-            binding.edEmail.requestFocus();
+            binding.etEmail.setError("Invalid email!");
+            binding.etEmail.requestFocus();
             isValid = false;
         } else if (password.isEmpty()) {
-            binding.edPass.setError("Please enter your password!");
-            binding.edPass.requestFocus();
+            binding.etPassword.setError("Please enter your password!");
+            binding.etPassword.requestFocus();
             isValid = false;
         }
         return isValid;

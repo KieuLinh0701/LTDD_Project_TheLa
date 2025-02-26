@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.TheLa.fragments.ShopFragment">
 
-    <!-- LinearLayout for search bar -->
     <LinearLayout
         android:id="@+id/searchBar"
         android:layout_width="0dp"

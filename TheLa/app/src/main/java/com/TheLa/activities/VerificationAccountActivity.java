@@ -4,11 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,10 +22,12 @@ import com.TheLa.services.implement.UserService;
 import com.example.TheLa.databinding.ActivityVerificationAccountBinding;
 
 public class VerificationAccountActivity extends AppCompatActivity {
+    private int otpDuration = 10;
     ActivityVerificationAccountBinding binding;
     UserService userService;
     EditText[] otpInputs;
     String feature;
+    private TextView tvTime, tvSendEmail;
 
 
     @Override
@@ -40,13 +44,8 @@ public class VerificationAccountActivity extends AppCompatActivity {
 
         feature = getIntent().getStringExtra("feature");
 
-        if ("Login".equals(feature)) {
-            binding.title.setText("Verify\nAccount");
-        } else if ("ForgotPassword".equals(feature)) {
-            binding.title.setText("Forgot\nPassword");
-        } else if ("Register".equals(feature)) {
-            binding.title.setText("Create\nAccount");
-        }
+        tvTime = binding.tvTime;
+        tvSendEmail = binding.tvSendEmail;
 
         otpInputs = new EditText[]{
                 binding.ettEmail1,
@@ -90,8 +89,25 @@ public class VerificationAccountActivity extends AppCompatActivity {
         addEvents();
     }
 
+    private void startCountdown() {
+        new CountDownTimer(otpDuration * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tvTime.setText(String.valueOf(millisUntilFinished / 1000));
+            }
+
+            @Override
+            public void onFinish() {
+                tvTime.setText("0");
+                tvSendEmail.setEnabled(true);
+                tvSendEmail.setText("Gửi lại");
+            }
+        }.start();
+    }
+
     private void addEvents() {
         binding.btnVerify.setOnClickListener(v -> btnVerifyClick());
+        startCountdown();
     }
 
     private void btnVerifyClick() {

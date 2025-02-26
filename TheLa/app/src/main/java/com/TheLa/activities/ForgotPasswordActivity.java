@@ -35,12 +35,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        binding.btnLogin.setOnClickListener(v -> btnClick());
+        binding.btnRecovery.setOnClickListener(v -> btnClick());
     }
 
     private void btnClick() {
-        String pass = binding.edPass.getText().toString().trim();
-        String rePass = binding.edRePass.getText().toString().trim();
+        String pass = binding.etPassword.getText().toString().trim();
+        String rePass = binding.etRepeatPassword.getText().toString().trim();
 
         // Validate input
         if (!isValidInput(pass, rePass)) {
@@ -64,20 +64,20 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private boolean isValidInput(String password, String rePassword) {
         boolean isValid = true;
         if (password.isEmpty()) {
-            binding.edPass.setError("Please enter your password!");
-            binding.edPass.requestFocus();
+            binding.etPassword.setError("Please enter your password!");
+            binding.etPassword.requestFocus();
             isValid = false;
         } else if (!isPasswordStrong(password)) {
             isValid = false;
         }
 
         if (rePassword.isEmpty()) {
-            binding.edRePass.setError("Please confirm your password!");
-            binding.edRePass.requestFocus();
+            binding.etRepeatPassword.setError("Please confirm your password!");
+            binding.etRepeatPassword.requestFocus();
             isValid = false;
         } else if (!password.equals(rePassword)) {
-            binding.edRePass.setError("Passwords do not match!");
-            binding.edRePass.requestFocus();
+            binding.etRepeatPassword.setError("Passwords do not match!");
+            binding.etRepeatPassword.requestFocus();
             isValid = false;
         }
         return isValid;
@@ -86,36 +86,36 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private boolean isPasswordStrong(String password) {
         // Kiểm tra độ dài mật khẩu (ít nhất 8 ký tự)
         if (password.length() < 8) {
-            binding.edPass.setError("Password must be at least 8 characters long!");
-            binding.edPass.requestFocus();
+            binding.etPassword.setError("Password must be at least 8 characters long!");
+            binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một chữ cái hoa
         if (!password.matches(".*[A-Z].*")) {
-            binding.edPass.setError("Password must contain at least one uppercase letter!");
-            binding.edPass.requestFocus();
+            binding.etPassword.setError("Password must contain at least one uppercase letter!");
+            binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một chữ cái thường
         if (!password.matches(".*[a-z].*")) {
-            binding.edPass.setError("Password must contain at least one lowercase letter!");
-            binding.edPass.requestFocus();
+            binding.etPassword.setError("Password must contain at least one lowercase letter!");
+            binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một số
         if (!password.matches(".*[0-9].*")) {
-            binding.edPass.setError("Password must contain at least one number!");
-            binding.edPass.requestFocus();
+            binding.etPassword.setError("Password must contain at least one number!");
+            binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một ký tự đặc biệt
         if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-            binding.edPass.setError("Password must contain at least one special character!");
-            binding.edPass.requestFocus();
+            binding.etPassword.setError("Password must contain at least one special character!");
+            binding.etPassword.requestFocus();
             return false;
         }
 

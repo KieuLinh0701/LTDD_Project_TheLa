@@ -41,7 +41,7 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
     }
 
     private void btnNextClick() {
-        String email = binding.edEmail.getText().toString().trim();
+        String email = binding.etEmail.getText().toString().trim();
 
         // Validate input
         if (!isValidInput(email)) {
@@ -77,12 +77,12 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
 
     private boolean isValidInput(String email) {
         if (email.isEmpty()) {
-            binding.edEmail.setError("Please enter your email!");
-            binding.edEmail.requestFocus();
+            binding.etEmail.setError("Please enter your email!");
+            binding.etEmail.requestFocus();
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.edEmail.setError("Invalid email!");
-            binding.edEmail.requestFocus();
+            binding.etEmail.setError("Invalid email!");
+            binding.etEmail.requestFocus();
             return false;
         }
         return true;
