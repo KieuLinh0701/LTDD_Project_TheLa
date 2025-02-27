@@ -5,15 +5,17 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.InputType;
 import android.util.Patterns;
-import android.view.MotionEvent;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
@@ -22,6 +24,8 @@ import com.TheLa.configs.SendMail;
 import com.TheLa.utils.SharedPreferenceManager;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityLoginBinding;
+
+import java.sql.Timestamp;
 
 public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
@@ -41,12 +45,11 @@ public class LoginActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-//         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
-//         if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
-//            switchToHomeActivity();
-//         }
+         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
+         if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
+            switchToHomeActivity();
+         }
 
-        PasswordClick();
         addEvents();
     }
 
@@ -54,32 +57,32 @@ public class LoginActivity extends AppCompatActivity {
         binding.btnLogin.setOnClickListener(v -> btnLoginClick());
         binding.tvForgotPassword.setOnClickListener(v -> tvForgotPasswordClick());
         binding.tvSignUp.setOnClickListener(v -> tvSignUpClick());
+        binding.btnVisiblePassword.setOnClickListener(v -> btnVisiblePasswordClick());
+        binding.btnBack.setOnClickListener(
+                v -> btnBackClick()
+        );
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void PasswordClick() {
-        binding.etPassword.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                // Get the drawable at the end of the EditText
-                if (binding.etPassword.getCompoundDrawablesRelative()[2] != null &&
-                        event.getRawX() >= (binding.etPassword.getRight() -
-                                binding.etPassword.getCompoundDrawablesRelative()[2].getBounds().width())) {
-                    // Toggle password visibility
-                    if (isPasswordVisible) {
-                        binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        binding.etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_closed, 0);
-                    } else {
-                        binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                        binding.etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
-                    }
-                    // Move cursor to the end
-                    binding.etPassword.setSelection(binding.etPassword.getText().length());
-                    isPasswordVisible = !isPasswordVisible;
-                    return true;
-                }
-            }
-            return false;
-        });
+    private void btnBackClick() {
+        finish();
+    }
+
+    private void btnVisiblePasswordClick() {
+        if (isPasswordVisible) {
+            binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            binding.btnVisiblePassword.setImageResource(R.drawable.ic_eye_closed);
+        } else {
+            binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            binding.btnVisiblePassword.setImageResource(R.drawable.ic_eye_open);
+        }
+
+        binding.etPassword.setTypeface(Typeface.SANS_SERIF);
+        binding.etPassword.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
+        binding.btnVisiblePassword.setColorFilter(ContextCompat.getColor(this, R.color.green));
+
+        binding.etPassword.setSelection(binding.etPassword.getText().length());
+        isPasswordVisible = !isPasswordVisible;
     }
 
     private void tvSignUpClick() {
@@ -110,38 +113,44 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 String code = SendMail.getRandom();
                 user.setCode(code);
-                String subject = "Confirm Your Account";
+                user.setCreateCode(new Timestamp(System.currentTimeMillis()));
+                String subject  = "Xác Thực Tài Khoản";
                 String message = "Hi " + user.getName() + ",\n" +
-                        "Use the code below to confirm your account:\n\n" +
+                        "Hãy sử dụng mã bên dưới để xác nhận tài khoản của bạn:\n\n" +
                         code + "\n\n" +
-                        "Thanks for joining us!";
+                        "Cảm ơn bạn đã tham gia cùng chúng tôi!";
 
                 if (SendMail.sendEmail(email, subject, message)) {
-                    Intent intent = new Intent(LoginActivity.this, VerificationAccountActivity.class);
-                    intent.putExtra("user", user);
-                    intent.putExtra("feature", "Login");
-                    startActivity(intent);
+                    Toast.makeText(this, "Tài khoản của bạn chưa được xác thực. Vui lòng kiểm tra email và hoàn tất xác thực.", Toast.LENGTH_SHORT).show();
+                    binding.getRoot().postDelayed(() -> {
+                        Intent intent = new Intent(LoginActivity.this, VerificationAccountActivity.class);
+                        intent.putExtra("user", user);
+                        intent.putExtra("feature", "Login");
+                        startActivity(intent);
+                    }, 2000);
                 } else {
-                    Toast.makeText(LoginActivity.this, "Failed to send the verification email. Please try again later!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Gửi email xác thực không thành công. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
-            Toast.makeText(LoginActivity.this, "Login failed, please check your email or password!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại, vui lòng kiểm tra email hoặc mật khẩu của bạn!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private boolean isValidInput(String email, String password) {
         boolean isValid = true;
         if (email.isEmpty()) {
-            binding.etEmail.setError("Please enter your email!");
+            binding.etEmail.setError("Vui lòng nhập email!");
             binding.etEmail.requestFocus();
             isValid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.setError("Invalid email!");
+            binding.etEmail.setError("Email không hợp lệ!");
             binding.etEmail.requestFocus();
             isValid = false;
-        } else if (password.isEmpty()) {
-            binding.etPassword.setError("Please enter your password!");
+        }
+
+        if (password.isEmpty()) {
+            binding.etPassword.setError("Vui lòng nhập mật khẩu!");
             binding.etPassword.requestFocus();
             isValid = false;
         }

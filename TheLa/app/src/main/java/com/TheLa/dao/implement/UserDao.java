@@ -17,7 +17,7 @@ public class UserDao implements IUserDao {
     public User addUser(User user) {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
-                String sql = "INSERT INTO users (name, email, password, code, address, phone, role, isActivate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO users (name, email, password, code, address, phone, role, image, isActivate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
                 preparedStatement.setString(1, user.getName());
@@ -27,7 +27,8 @@ public class UserDao implements IUserDao {
                 preparedStatement.setString(5, user.getAddress());
                 preparedStatement.setString(6, user.getPhone());
                 preparedStatement.setString(7, user.getRole());
-                preparedStatement.setBoolean(8, user.getActive() != null ? user.getActive() : false);
+                preparedStatement.setString(8, user.getImage());
+                preparedStatement.setBoolean(9, user.getActive() != null ? user.getActive() : false);
 
                 int rowsAffected = preparedStatement.executeUpdate();
 
@@ -54,7 +55,7 @@ public class UserDao implements IUserDao {
     public boolean updateUser(User user) {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
-                String sql = "UPDATE users SET name = ?, email = ?, password = ?, code = ?, address = ?, phone = ?, role = ?, isActivate = ? WHERE userId = ?";
+                String sql = "UPDATE users SET name = ?, email = ?, password = ?, code = ?, address = ?, phone = ?, role = ?, image = ?, isActivate = ? WHERE userId = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, user.getName());
                 preparedStatement.setString(2, user.getEmail());
@@ -63,8 +64,9 @@ public class UserDao implements IUserDao {
                 preparedStatement.setString(5, user.getAddress());
                 preparedStatement.setString(6, user.getPhone());
                 preparedStatement.setString(7, user.getRole());
-                preparedStatement.setBoolean(8, user.getActive() != null ? user.getActive() : false);
-                preparedStatement.setLong(9, user.getUserId());
+                preparedStatement.setString(8, user.getImage());
+                preparedStatement.setBoolean(9, user.getActive() != null ? user.getActive() : false);
+                preparedStatement.setLong(10, user.getUserId());
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected>0) {
                     Log.w("Ket noi", "thanh cong");
@@ -105,6 +107,7 @@ public class UserDao implements IUserDao {
                                     resultSet.getString("address"),
                                     resultSet.getString("phone"),
                                     resultSet.getString("role"),
+                                    resultSet.getString("image"),
                                     resultSet.getBoolean("isActivate")
                             );
                         }

@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:layout_margin="8dp"
     android:gravity="center"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/categoryImage"
@@ -19,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Category Name"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:textColor="@color/dark_gray"
-        android:gravity="center" />
+        android:gravity="center"
+        android:fontFamily="sans-serif"/>
 </LinearLayout>

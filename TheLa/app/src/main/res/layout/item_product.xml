@@ -30,8 +30,10 @@
                 android:layout_height="wrap_content"
                 android:text="Product Name"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@color/dark_gray"/>
+                android:textSize="14sp"
+                android:textColor="@color/dark_gray"
+                android:fontFamily="sans-serif"
+                android:textAllCaps="true"/>
 
             <!-- Mô tả sản phẩm -->
             <TextView
@@ -39,8 +41,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Product Description"
-                android:textSize="14sp"
-                android:textColor="#888888" />
+                android:paddingTop="2dp"
+                android:textSize="12sp"
+                android:textColor="#888888"
+                android:fontFamily="sans-serif"/>
 
             <!-- Giá sản phẩm -->
             <TextView
@@ -48,9 +52,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Price"
+                android:paddingTop="2dp"
                 android:textStyle="bold"
                 android:textSize="14sp"
-                android:textColor="@color/dark_gray"/>
+                android:textColor="@color/dark_gray"
+                android:fontFamily="sans-serif"/>
         </LinearLayout>
 
         <!-- Cột chứa nút và trạng thái -->

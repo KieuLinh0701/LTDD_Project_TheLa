@@ -1,6 +1,7 @@
 package com.TheLa.models;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 public class User implements Serializable {
     private Long userId;
@@ -11,13 +12,15 @@ public class User implements Serializable {
     private String address;
     private String phone;
     private String role;
+    private String image;
+    private Timestamp createCode;
     private Boolean isActive;
 
     public User(){
 
     }
-    public User(Long userId, String name, String email, String password, String code,
-                String address, String phone, String role, Boolean isActive) {
+
+    public User(Long userId, String name, String email, String password, String code, String address, String phone, String role, String image, Timestamp createCode, Boolean isActive) {
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -26,10 +29,13 @@ public class User implements Serializable {
         this.address = address;
         this.phone = phone;
         this.role = role;
+        this.image = image;
+        this.createCode = createCode;
         this.isActive = isActive;
     }
 
-    public User(String name, String email, String password, String code, String address, String phone, String role, Boolean isActive) {
+    public User(Long userId, String name, String email, String password, String code, String address, String phone, String role, String image, Boolean isActive) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -37,6 +43,20 @@ public class User implements Serializable {
         this.address = address;
         this.phone = phone;
         this.role = role;
+        this.image = image;
+        this.isActive = isActive;
+    }
+
+    public User(String name, String email, String password, String code, String address, String phone, String role, String image, Timestamp createCode, Boolean isActive) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.code = code;
+        this.address = address;
+        this.phone = phone;
+        this.role = role;
+        this.image = image;
+        this.createCode = createCode;
         this.isActive = isActive;
     }
 
@@ -102,6 +122,22 @@ public class User implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Timestamp getCreateCode() {
+        return createCode;
+    }
+
+    public void setCreateCode(Timestamp createCode) {
+        this.createCode = createCode;
     }
 
     public Boolean getActive() {

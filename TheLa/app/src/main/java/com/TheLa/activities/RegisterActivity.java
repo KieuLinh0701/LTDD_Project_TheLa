@@ -1,18 +1,19 @@
 package com.TheLa.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.InputType;
 import android.util.Patterns;
-import android.view.MotionEvent;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
@@ -22,11 +23,13 @@ import com.TheLa.utils.Constant;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityRegisterBinding;
 
+import java.sql.Timestamp;
+
 public class RegisterActivity extends AppCompatActivity {
     ActivityRegisterBinding binding;
     UserService userService;
     private boolean isPasswordVisible = false;
-    private boolean isRePasswordVisible = false;
+    private boolean isRepeatPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,58 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        PasswordClick();
-
         addEvents();
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void PasswordClick() {
-        binding.etPassword.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                // Get the drawable at the end of the EditText
-                if (binding.etPassword.getCompoundDrawablesRelative()[2] != null &&
-                        event.getRawX() >= (binding.etPassword.getRight() -
-                                binding.etPassword.getCompoundDrawablesRelative()[2].getBounds().width())) {
-                    // Toggle password visibility
-                    if (isPasswordVisible) {
-                        binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        binding.etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_closed, 0);
-                    } else {
-                        binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                        binding.etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
-                    }
-                    // Move cursor to the end
-                    binding.etPassword.setSelection(binding.etPassword.getText().length());
-                    isPasswordVisible = !isPasswordVisible;
-                    return true;
-                }
-            }
-            return false;
-        });
-
-        binding.etRepeatPassword.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                // Get the drawable at the end of the EditText
-                if (binding.etRepeatPassword.getCompoundDrawablesRelative()[2] != null &&
-                        event.getRawX() >= (binding.etRepeatPassword.getRight() -
-                                binding.etRepeatPassword.getCompoundDrawablesRelative()[2].getBounds().width())) {
-                    // Toggle password visibility
-                    if (isRePasswordVisible) {
-                        binding.etRepeatPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        binding.etRepeatPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_closed, 0);
-                    } else {
-                        binding.etRepeatPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                        binding.etRepeatPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
-                    }
-                    // Move cursor to the end
-                    binding.etRepeatPassword.setSelection(binding.etRepeatPassword.getText().length());
-                    isRePasswordVisible = !isRePasswordVisible;
-                    return true;
-                }
-            }
-            return false;
-        });
     }
 
     private void addEvents() {
@@ -102,6 +54,58 @@ public class RegisterActivity extends AppCompatActivity {
         binding.tvLogIn.setOnClickListener(
                 v -> btnLoginClick()
         );
+
+        binding.btnVisiblePassword.setOnClickListener(
+                v -> btnVisiblePasswordClick()
+        );
+
+        binding.btnVisibleRepeatPassword.setOnClickListener(
+                v -> btnVisibleRepeatPasswordClick()
+        );
+
+        binding.btnBack.setOnClickListener(
+                v -> btnBack()
+        );
+    }
+
+    private void btnBack() {
+        finish();
+    }
+
+    private void btnVisibleRepeatPasswordClick() {
+        if (isRepeatPasswordVisible) {
+            binding.etRepeatPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            binding.btnVisibleRepeatPassword.setImageResource(R.drawable.ic_eye_closed);
+        } else {
+            binding.etRepeatPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            binding.btnVisibleRepeatPassword.setImageResource(R.drawable.ic_eye_open);
+        }
+
+        binding.etRepeatPassword.setTypeface(Typeface.SANS_SERIF);
+        binding.etRepeatPassword.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
+        binding.btnVisibleRepeatPassword.setColorFilter(ContextCompat.getColor(this, R.color.green));
+
+        binding.etRepeatPassword.setSelection(binding.etRepeatPassword.getText().length());
+        isRepeatPasswordVisible = !isRepeatPasswordVisible;
+    }
+
+    private void btnVisiblePasswordClick() {
+        if (isPasswordVisible) {
+            binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            binding.btnVisiblePassword.setImageResource(R.drawable.ic_eye_closed);
+        } else {
+            binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            binding.btnVisiblePassword.setImageResource(R.drawable.ic_eye_open);
+        }
+
+        binding.etPassword.setTypeface(Typeface.SANS_SERIF);
+        binding.etPassword.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
+        binding.btnVisiblePassword.setColorFilter(ContextCompat.getColor(this, R.color.green));
+
+        binding.etPassword.setSelection(binding.etPassword.getText().length());
+        isPasswordVisible = !isPasswordVisible;
     }
 
     private void btnLoginClick() {
@@ -130,14 +134,16 @@ public class RegisterActivity extends AppCompatActivity {
                 null,
                 null,
                 Constant.ROLE_CUSTOMER,
+                null,
+                new Timestamp(System.currentTimeMillis()),
                 false
         );
 
-        String subject = "Confirm Your Account";
+        String subject  = "Xác Thực Tài Khoản";
         String message = "Hi " + user.getName() + ",\n" +
-                "Use the code below to confirm your account:\n\n" +
+                "Hãy sử dụng mã bên dưới để xác nhận tài khoản của bạn:\n\n" +
                 code + "\n\n" +
-                "Thanks for joining us!";
+                "Cảm ơn bạn đã tham gia cùng chúng tôi!";
 
         if (SendMail.sendEmail(email, subject, message)) {
             User newUser = userService.addUser(user);
@@ -148,34 +154,34 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         } else {
-            Toast.makeText(RegisterActivity.this, "An error occurred while sending the email. Please check your email address and try again!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Đã xảy ra lỗi khi gửi email. Vui lòng kiểm tra địa chỉ email hoặc kết nối mạng của bạn và thử lại!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private boolean isValidInput(String name, String email, String password, String rePassword) {
         boolean isValid = true;
         if (name.isEmpty()) {
-            binding.etName.setError("Please enter your name!");
+            binding.etName.setError("Vui lòng nhập tên!");
             binding.etName.requestFocus();
             isValid = false;
         }
 
         if (email.isEmpty()) {
-            binding.etEmail.setError("Please enter your email!");
+            binding.etEmail.setError("Vui lòng nhập email!");
             binding.etEmail.requestFocus();
             isValid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.setError("Invalid email!");
+            binding.etEmail.setError("Email không hợp lệ!");
             binding.etEmail.requestFocus();
             isValid = false;
         } else if (userService.getUserFindByEmail(email) != null) {
-            binding.etEmail.setError("This email is already linked to another account!");
+            binding.etEmail.setError("Email này đã được liên kết với một tài khoản khác!");
             binding.etEmail.requestFocus();
             isValid = false;
         }
 
         if (password.isEmpty()) {
-            binding.etPassword.setError("Please enter your password!");
+            binding.etPassword.setError("Vui lòng nhập mật khẩu!");
             binding.etPassword.requestFocus();
             isValid = false;
         } else if (!isPasswordStrong(password)) {
@@ -183,11 +189,11 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (rePassword.isEmpty()) {
-            binding.etRepeatPassword.setError("Please confirm your password!");
+            binding.etRepeatPassword.setError("Vui lòng xác nhận lại mật khẩu!");
             binding.etRepeatPassword.requestFocus();
             isValid = false;
         } else if (!password.equals(rePassword)) {
-            binding.etRepeatPassword.setError("Passwords do not match!");
+            binding.etRepeatPassword.setError("Mật khẩu không khớp!");
             binding.etRepeatPassword.requestFocus();
             isValid = false;
         }
@@ -197,40 +203,39 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isPasswordStrong(String password) {
         // Kiểm tra độ dài mật khẩu (ít nhất 8 ký tự)
         if (password.length() < 8) {
-            binding.etPassword.setError("Password must be at least 8 characters long!");
+            binding.etPassword.setError("Mật khẩu phải có ít nhất 8 ký tự!");
             binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một chữ cái hoa
         if (!password.matches(".*[A-Z].*")) {
-            binding.etPassword.setError("Password must contain at least one uppercase letter!");
+            binding.etPassword.setError("Mật khẩu phải chứa ít nhất một chữ cái viết hoa!");
             binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một chữ cái thường
         if (!password.matches(".*[a-z].*")) {
-            binding.etPassword.setError("Password must contain at least one lowercase letter!");
+            binding.etPassword.setError("Mật khẩu phải chứa ít nhất một chữ cái viết thường!");
             binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một số
         if (!password.matches(".*[0-9].*")) {
-            binding.etPassword.setError("Password must contain at least one number!");
+            binding.etPassword.setError("Mật khẩu phải chứa ít nhất một chữ số!");
             binding.etPassword.requestFocus();
             return false;
         }
 
         // Kiểm tra có ít nhất một ký tự đặc biệt
-        if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-            binding.etPassword.setError("Password must contain at least one special character!");
+        if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>_].*")) {
+            binding.etPassword.setError("Mật khẩu phải chứa ít nhất một ký tự đặc biệt!");
             binding.etPassword.requestFocus();
             return false;
         }
 
-        return true;  // Mật khẩu đủ mạnh
+        return true;
     }
-
 }

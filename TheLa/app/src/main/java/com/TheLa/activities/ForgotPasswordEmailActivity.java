@@ -17,6 +17,8 @@ import com.TheLa.services.implement.UserService;
 import com.TheLa.configs.SendMail;
 import com.example.TheLa.databinding.ActivityForgotpasswordEmailBinding;
 
+import java.sql.Timestamp;
+
 public class ForgotPasswordEmailActivity extends AppCompatActivity {
     ActivityForgotpasswordEmailBinding binding;
     UserService userService;
@@ -38,6 +40,16 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
 
     private void addEvents() {
         binding.btnNext.setOnClickListener(v -> btnNextClick());
+        binding.btnBack.setOnClickListener(
+                v -> btnBackClick()
+        );
+    }
+
+    private void btnBackClick() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void btnNextClick() {
@@ -52,13 +64,12 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
         if (user != null) {
             String code = SendMail.getRandom();
             user.setCode(code);
-            String subject = "Reset Your Password";
-            String message = "Hi " + user.getName() + ",\n\n" +
-                    "We received a request to reset your password for your account. Please use the verification code below to reset your password:\n\n" +
+            user.setCreateCode(new Timestamp(System.currentTimeMillis()));
+            String subject = "Đặt Lại Mật Khẩu";
+            String message = "Hi " + user.getName() + ",\n" +
+                    "Hãy sử dụng mã bên dưới để đặt lại mật khẩu của bạn:\n\n" +
                     code + "\n\n" +
-                    "If you did not request a password reset, please ignore this email or contact support if you have concerns.\n\n" +
-                    "Thank you,\n" +
-                    "The La Team";
+                    "Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.";
 
             if (SendMail.sendEmail(email, subject, message)) {
                 if (userService.updateUser(user)) {
@@ -68,20 +79,20 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             } else {
-                Toast.makeText(ForgotPasswordEmailActivity.this, "Failed to send the verification email. Please try again later!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForgotPasswordEmailActivity.this, "Gửi email xác thực không thành công. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(ForgotPasswordEmailActivity.this, "Email not found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ForgotPasswordEmailActivity.this, "Email không tồn tại!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private boolean isValidInput(String email) {
         if (email.isEmpty()) {
-            binding.etEmail.setError("Please enter your email!");
+            binding.etEmail.setError("Vui lòng nhập email!");
             binding.etEmail.requestFocus();
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.setError("Invalid email!");
+            binding.etEmail.setError("Email không hợp lệ!");
             binding.etEmail.requestFocus();
             return false;
         }

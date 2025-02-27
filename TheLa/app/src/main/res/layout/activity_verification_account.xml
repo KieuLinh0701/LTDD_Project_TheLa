@@ -44,7 +44,7 @@
         android:id="@+id/toolbarDivider"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/edit_gray"
+        android:background="@color/dark_gray"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -209,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="4dp"
                 android:text="Gửi lại"
-                android:textColor="@color/red"
+                android:textColor="@color/dark_gray"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
         </LinearLayout>

@@ -19,11 +19,11 @@ import com.example.TheLa.R;
 
 import java.util.List;
 
-public class ShopFragmentAdapter extends RecyclerView.Adapter<ShopFragmentAdapter.ProductViewHolder>{
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
     private List<Product> productList;
     private Context context;
 
-    public ShopFragmentAdapter(List<Product> productList, Context context) {
+    public ProductAdapter(List<Product> productList, Context context) {
         this.productList = productList;
         this.context = context;
     }

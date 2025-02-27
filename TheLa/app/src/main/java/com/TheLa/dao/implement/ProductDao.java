@@ -58,7 +58,7 @@ public class ProductDao implements IProductDao {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
                 String sql = "SELECT TOP 10 * FROM products \n" +
-                        "WHERE isActive = 1 AND isDelete = 0 AND createDate >= DATEADD(DAY, -7, GETDATE()) \n" +
+                        "WHERE isActive = 1 AND isDelete = 0 AND DATEDIFF(DAY, createDate, GETDATE()) <= 7 \n" +
                         "ORDER BY createDate DESC";
 
                 try (PreparedStatement preparedStatement = connection.prepareStatement(sql);

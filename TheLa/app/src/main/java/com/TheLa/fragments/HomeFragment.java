@@ -1,66 +1,114 @@
 package com.TheLa.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.TheLa.adapters.CategoryAdapter;
+import com.TheLa.adapters.ProductAdapter;
+import com.TheLa.fragments.home.BestSellerFragment;
+import com.TheLa.fragments.home.LatestProductFragment;
+import com.TheLa.models.Category;
+import com.TheLa.models.Product;
+import com.TheLa.services.implement.CategoryService;
+import com.TheLa.services.implement.ProductService;
 import com.example.TheLa.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.List;
+
 public class HomeFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView categoryRecyclerView;
+    private RecyclerView productRecyclerView;
+    private CategoryAdapter categoryAdapter;
+    private ProductAdapter productAdapter;
+    ProductService productService = new ProductService();
+    CategoryService categoryService = new CategoryService();
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        setupRecyclerViews(view);
+
+        setupLatestCardView(view);
+        setupBestSellerCardView(view);
+
+        return view;
+    }
+
+    private void setupBestSellerCardView(View view) {
+        CardView bestSellerCardView = view.findViewById(R.id.bestSeller);
+
+        bestSellerCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment bestSellerFragment = new BestSellerFragment();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_home, bestSellerFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+    }
+
+    private void setupLatestCardView(View view) {
+        CardView latestCardView = view.findViewById(R.id.latest);
+
+        latestCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment latestProductFragment = new LatestProductFragment();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_home, latestProductFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+    }
+
+    private void setupRecyclerViews(View view) {
+        // Product
+        productRecyclerView = view.findViewById(R.id.productRecyclerView);
+        productRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        List<Product> productList = productService.getAllActiveAndNotDeletedProducts();
+
+        productAdapter = new ProductAdapter(productList, getContext());
+        productRecyclerView.setAdapter(productAdapter);
+
+        // Category
+        categoryRecyclerView = view.findViewById(R.id.categoryRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        categoryRecyclerView.setLayoutManager(layoutManager);
+
+        List<Category> categoryList = categoryService.getAllActiveAndNotDeletedCategories();
+
+        // Truyền OnItemClickListener vào Adapter
+        categoryAdapter = new CategoryAdapter(categoryList, getContext(), position -> {
+            // Xử lý sự kiện click vào một category
+            Category clickedCategory = categoryList.get(position);
+            Toast.makeText(getContext(), "Clicked: " + clickedCategory.getName(), Toast.LENGTH_SHORT).show();
+
+            // Nếu có logic filter sản phẩm theo category, bạn có thể thêm logic ở đây
+//            List<Product> filteredProducts = productService.get(clickedCategory.getId());
+//            productAdapter.updateData(filteredProducts);
+        });
+
+        categoryRecyclerView.setAdapter(categoryAdapter);
     }
 }

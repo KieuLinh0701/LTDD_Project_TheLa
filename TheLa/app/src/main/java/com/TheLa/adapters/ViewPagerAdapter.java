@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.TheLa.fragments.HomeFragment;
+import com.TheLa.fragments.ShopFragment;
 import com.TheLa.fragments.MeFragment;
 import com.TheLa.fragments.OrderFragment;
-import com.TheLa.fragments.ShopFragment;
+import com.TheLa.fragments.HomeFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behaviorResumeOnlyCurrentFragment) {

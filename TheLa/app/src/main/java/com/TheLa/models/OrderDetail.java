@@ -4,7 +4,6 @@ public class OrderDetail {
     private long orderDetailId;
     private long orderId;
     private long productId;
-    private long sizeId;
     private int quantity;
     private int price;
 
@@ -30,14 +29,6 @@ public class OrderDetail {
 
     public void setProductId(long productId) {
         this.productId = productId;
-    }
-
-    public long getSizeId() {
-        return sizeId;
-    }
-
-    public void setSizeId(long sizeId) {
-        this.sizeId = sizeId;
     }
 
     public int getQuantity() {
