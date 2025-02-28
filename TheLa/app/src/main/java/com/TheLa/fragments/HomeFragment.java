@@ -18,6 +18,7 @@ import com.TheLa.adapters.CategoryAdapter;
 import com.TheLa.adapters.ProductAdapter;
 import com.TheLa.fragments.home.BestSellerFragment;
 import com.TheLa.fragments.home.LatestProductFragment;
+import com.TheLa.fragments.home.SearchProductFragment;
 import com.TheLa.models.Category;
 import com.TheLa.models.Product;
 import com.TheLa.services.implement.CategoryService;
@@ -102,11 +103,22 @@ public class HomeFragment extends Fragment {
         categoryAdapter = new CategoryAdapter(categoryList, getContext(), position -> {
             // Xử lý sự kiện click vào một category
             Category clickedCategory = categoryList.get(position);
-            Toast.makeText(getContext(), "Clicked: " + clickedCategory.getName(), Toast.LENGTH_SHORT).show();
 
-            // Nếu có logic filter sản phẩm theo category, bạn có thể thêm logic ở đây
-//            List<Product> filteredProducts = productService.get(clickedCategory.getId());
-//            productAdapter.updateData(filteredProducts);
+            SearchProductFragment searchProductFragment = new SearchProductFragment();
+
+            // Tạo một Bundle để truyền dữ liệu
+            Bundle bundle = new Bundle();
+            bundle.putLong("categoryId", clickedCategory.getCategoryId());
+
+            // Đặt Bundle vào Fragment
+            searchProductFragment.setArguments(bundle);
+
+            // Thay thế Fragment hiện tại bằng Fragment mới
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_home, searchProductFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         categoryRecyclerView.setAdapter(categoryAdapter);

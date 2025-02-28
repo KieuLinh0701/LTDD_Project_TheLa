@@ -23,12 +23,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSearch"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Tìm kiếm"
+            android:hint="Tìm kiếm"
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="8dp"
             android:backgroundTint="@null"
@@ -38,7 +38,8 @@
             android:fontFamily="sans-serif"
             android:padding="8dp"
             android:background="@drawable/button_search"
-            android:textAllCaps="false"/>
+            android:inputType="text"
+            android:textAllCaps="false" />
 
 
         <!-- Cart icon -->

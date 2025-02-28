@@ -79,6 +79,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productList.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<Product> filteredProducts) {
+        this.productList.clear();
+        this.productList.addAll(filteredProducts);
+        notifyDataSetChanged();
+    }
+
     static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage, addCart;
         TextView productName, productDescription, productPrice, productStockStatus;
