@@ -44,12 +44,9 @@ public class MainActivity extends AppCompatActivity {
                         bottomNavigationView.getMenu().findItem(R.id.menu_home).setChecked(true);
                         break;
                     case 1:
-                        bottomNavigationView.getMenu().findItem(R.id.menu_shop).setChecked(true);
-                        break;
-                    case 2:
                         bottomNavigationView.getMenu().findItem(R.id.menu_orders).setChecked(true);
                         break;
-                    case 3:
+                    case 2:
                         bottomNavigationView.getMenu().findItem(R.id.menu_me).setChecked(true);
                         break;
                 }
@@ -66,12 +63,10 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.menu_home) {
                     viewPager.setCurrentItem(0);
-                } else if (item.getItemId() == R.id.menu_shop) {
-                    viewPager.setCurrentItem(1);
                 } else if (item.getItemId() == R.id.menu_orders) {
-                    viewPager.setCurrentItem(2);
+                    viewPager.setCurrentItem(1);
                 } else if (item.getItemId() == R.id.menu_me) {
-                    viewPager.setCurrentItem(3);
+                    viewPager.setCurrentItem(2);
                 }
                 return true;
             }

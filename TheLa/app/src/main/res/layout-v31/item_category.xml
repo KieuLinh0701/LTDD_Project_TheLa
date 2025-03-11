@@ -12,11 +12,9 @@
         android:id="@+id/categoryImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        android:clipToOutline="true"
+        android:scaleType="fitCenter"
         android:background="@drawable/circle_background"
-        android:src="@drawable/ic_email"/>
+        android:clipToOutline="true"/>
 
     <TextView
         android:id="@+id/categoryName"

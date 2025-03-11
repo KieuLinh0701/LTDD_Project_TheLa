@@ -6,6 +6,7 @@ public class Category {
     private String image;
     private boolean isActive;
     private boolean isDelete;
+    private Boolean isSelected;
 
     public Long getCategoryId() {
         return categoryId;
@@ -45,6 +46,14 @@ public class Category {
 
     public void setDelete(boolean delete) {
         isDelete = delete;
+    }
+
+    public Boolean isSelected() {
+        return isSelected != null && isSelected;
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
     }
 }
 

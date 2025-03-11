@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.TheLa.models.User;
 import com.TheLa.services.implement.UserService;
 import com.TheLa.configs.SendMail;
+import com.TheLa.utils.JsonEncryptor;
 import com.example.TheLa.databinding.ActivityForgotpasswordEmailBinding;
+
+import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
@@ -62,24 +65,33 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
 
         User user = userService.getUserFindByEmail(email);
         if (user != null) {
-            String code = SendMail.getRandom();
-            user.setCode(code);
-            user.setCreateCode(new Timestamp(System.currentTimeMillis()));
-            String subject = "Đặt Lại Mật Khẩu";
-            String message = "Hi " + user.getName() + ",\n" +
-                    "Hãy sử dụng mã bên dưới để đặt lại mật khẩu của bạn:\n\n" +
-                    code + "\n\n" +
-                    "Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.";
 
-            if (SendMail.sendEmail(email, subject, message)) {
-                if (userService.updateUser(user)) {
-                    Intent intent = new Intent(ForgotPasswordEmailActivity.this, VerificationAccountActivity.class);
-                    intent.putExtra("user", user);
-                    intent.putExtra("feature", "ForgotPassword");
-                    startActivity(intent);
+            try {
+                String code = SendMail.getRandom();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("otp", code);
+                String encryptedCode = JsonEncryptor.encrypt(jsonObject.toString());
+                user.setCode(encryptedCode);
+                user.setCreateCode(new Timestamp(System.currentTimeMillis()));
+                String subject = "Đặt Lại Mật Khẩu";
+                String message = "Hi " + user.getName() + ",\n" +
+                        "Hãy sử dụng mã bên dưới để đặt lại mật khẩu của bạn:\n\n" +
+                        code + "\n\n" +
+                        "Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.";
+
+                if (SendMail.sendEmail(email, subject, message)) {
+                    if (userService.updateUser(user)) {
+                        Intent intent = new Intent(ForgotPasswordEmailActivity.this, VerificationAccountActivity.class);
+                        intent.putExtra("user", user);
+                        intent.putExtra("feature", "ForgotPassword");
+                        startActivity(intent);
+                    }
+                } else {
+                    Toast.makeText(ForgotPasswordEmailActivity.this, "Gửi email xác thực không thành công. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(ForgotPasswordEmailActivity.this, "Gửi email xác thực không thành công. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(ForgotPasswordEmailActivity.this, "Đã xảy ra lỗi khi tạo hoặc gửi mã xác thực!", Toast.LENGTH_SHORT).show();
+                e.printStackTrace(); // In lỗi ra log để hỗ trợ debug
             }
         } else {
             Toast.makeText(ForgotPasswordEmailActivity.this, "Email không tồn tại!", Toast.LENGTH_SHORT).show();

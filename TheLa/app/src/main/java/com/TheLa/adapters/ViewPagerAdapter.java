@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.TheLa.fragments.ShopFragment;
 import com.TheLa.fragments.MeFragment;
 import com.TheLa.fragments.OrderFragment;
 import com.TheLa.fragments.HomeFragment;
@@ -17,7 +16,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     @NonNull
@@ -27,10 +26,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new HomeFragment();
             case 1:
-                return new ShopFragment();
-            case 2:
                 return new OrderFragment();
-            case 3:
+            case 2:
                 return new MeFragment();
             default:
                 return new HomeFragment();

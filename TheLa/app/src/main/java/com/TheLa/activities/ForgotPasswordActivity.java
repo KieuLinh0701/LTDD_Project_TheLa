@@ -17,8 +17,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.models.User;
 import com.TheLa.services.implement.UserService;
+import com.TheLa.utils.JsonEncryptor;
+import com.TheLa.utils.PasswordUtils;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityForgotpasswordBinding;
+
+import org.json.JSONObject;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     ActivityForgotpasswordBinding binding;
@@ -108,14 +112,20 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         User user = (User) getIntent().getSerializableExtra("user");
         if (user != null) {
-            user.setPassword(pass);
-            if (userService.updateUser(user)) {
-                Toast.makeText(this, "Khôi phục mật khẩu thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
-                binding.getRoot().postDelayed(() -> {
-                    Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }, 2000);
+            try {
+                String hashedPassword = PasswordUtils.hashPassword(pass);
+                user.setPassword(hashedPassword);
+                if (userService.updateUser(user)) {
+                    Toast.makeText(this, "Khôi phục mật khẩu thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
+                    binding.getRoot().postDelayed(() -> {
+                        Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }, 2000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Lỗi xử lý mật khẩu. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
             }
         }
     }

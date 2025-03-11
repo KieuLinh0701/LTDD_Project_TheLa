@@ -1,5 +1,6 @@
 package com.TheLa.fragments.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -48,37 +49,58 @@ public class SearchProductFragment extends Fragment {
         }
 
         setupRecyclerViews(view);
+        btnBackClick(view);
 
         return view;
     }
 
+
+    private void btnBackClick(View view) {
+        view.findViewById(R.id.btnBack).setOnClickListener(
+                v -> requireActivity().getSupportFragmentManager().popBackStack()
+        );
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     private void setupRecyclerViews(View view) {
-        // Product
+        // **1. RecyclerView cho sản phẩm**
         productRecyclerView = view.findViewById(R.id.productRecyclerView);
         productRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Product> productList = productService.findActiveAndNotDeletedProductsByCategoryId(categoryId);
-
         productAdapter = new ProductAdapter(productList, getContext());
         productRecyclerView.setAdapter(productAdapter);
 
-        // Category
+        // **2. RecyclerView cho danh mục**
         categoryRecyclerView = view.findViewById(R.id.categoryRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         categoryRecyclerView.setLayoutManager(layoutManager);
 
         List<Category> categoryList = categoryService.getAllActiveAndNotDeletedCategories();
-
-        // Truyền OnItemClickListener vào Adapter
+        for (Category category : categoryList) {
+            if (category.getCategoryId() == categoryId) {
+                category.setSelected(true);
+                break;
+            }
+        }
         categoryAdapter = new CategoryAdapter(categoryList, getContext(), position -> {
-            // Xử lý sự kiện click vào một category
             Category clickedCategory = categoryList.get(position);
 
-            //Lọc sản phẩm theo category và cập nhật lại trang
+            // Cập nhật trạng thái isSelected cho tất cả danh mục
+            for (Category category : categoryList) {
+                category.setSelected(false); // Reset trạng thái
+            }
+            clickedCategory.setSelected(true); // Đánh dấu danh mục được chọn
+
+            // Làm mới danh sách danh mục
+            categoryAdapter.notifyDataSetChanged();
+
+            // Lọc danh sách sản phẩm theo danh mục được chọn
             List<Product> filteredProducts = productService.findActiveAndNotDeletedProductsByCategoryId(clickedCategory.getCategoryId());
             productAdapter.updateData(filteredProducts);
         });
 
         categoryRecyclerView.setAdapter(categoryAdapter);
     }
+
 }

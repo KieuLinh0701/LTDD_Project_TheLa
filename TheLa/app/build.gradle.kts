@@ -57,4 +57,5 @@ dependencies {
     implementation(libs.jtds)
     implementation(libs.androidMail)
     implementation(libs.androidActivation)
+    implementation(libs.securityCrypto)
 }

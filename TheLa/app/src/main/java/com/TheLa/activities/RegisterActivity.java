@@ -20,8 +20,12 @@ import com.TheLa.models.User;
 import com.TheLa.services.implement.UserService;
 import com.TheLa.configs.SendMail;
 import com.TheLa.utils.Constant;
+import com.TheLa.utils.JsonEncryptor;
+import com.TheLa.utils.PasswordUtils;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityRegisterBinding;
+
+import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
@@ -126,35 +130,45 @@ public class RegisterActivity extends AppCompatActivity {
 
         String code = SendMail.getRandom();
 
-        User user = new User(
-                name,
-                email,
-                password,
-                code,
-                null,
-                null,
-                Constant.ROLE_CUSTOMER,
-                null,
-                new Timestamp(System.currentTimeMillis()),
-                false
-        );
+        try {
+            String hashedPassword = PasswordUtils.hashPassword(password);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("otp", code);
+            String encryptedCode = JsonEncryptor.encrypt(jsonObject.toString());
 
-        String subject  = "Xác Thực Tài Khoản";
-        String message = "Hi " + user.getName() + ",\n" +
-                "Hãy sử dụng mã bên dưới để xác nhận tài khoản của bạn:\n\n" +
-                code + "\n\n" +
-                "Cảm ơn bạn đã tham gia cùng chúng tôi!";
+            User user = new User(
+                    name,
+                    email,
+                    hashedPassword, // Lưu mật khẩu đã mã hóa
+                    encryptedCode, // Lưu code đã mã hóa
+                    null,
+                    null,
+                    Constant.ROLE_CUSTOMER,
+                    null,
+                    new Timestamp(System.currentTimeMillis()),
+                    false
+            );
 
-        if (SendMail.sendEmail(email, subject, message)) {
-            User newUser = userService.addUser(user);
-            if (newUser != null) {
-                Intent intent = new Intent(RegisterActivity.this, VerificationAccountActivity.class);
-                intent.putExtra("user", newUser);
-                intent.putExtra("feature", "Register");
-                startActivity(intent);
+            String subject  = "Xác Thực Tài Khoản";
+            String message = "Hi " + user.getName() + ",\n" +
+                    "Hãy sử dụng mã bên dưới để xác nhận tài khoản của bạn:\n\n" +
+                    code + "\n\n" +
+                    "Cảm ơn bạn đã tham gia cùng chúng tôi!";
+
+            if (SendMail.sendEmail(email, subject, message)) {
+                User newUser = userService.addUser(user);
+                if (newUser != null) {
+                    Intent intent = new Intent(RegisterActivity.this, VerificationAccountActivity.class);
+                    intent.putExtra("user", newUser);
+                    intent.putExtra("feature", "Register");
+                    startActivity(intent);
+                }
+            } else {
+                Toast.makeText(RegisterActivity.this, "Đã xảy ra lỗi khi gửi email. Vui lòng kiểm tra địa chỉ email hoặc kết nối mạng của bạn và thử lại!", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(RegisterActivity.this, "Đã xảy ra lỗi khi gửi email. Vui lòng kiểm tra địa chỉ email hoặc kết nối mạng của bạn và thử lại!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(RegisterActivity.this, "Đã xảy ra lỗi khi mã hóa dữ liệu!", Toast.LENGTH_SHORT).show();
         }
     }
 

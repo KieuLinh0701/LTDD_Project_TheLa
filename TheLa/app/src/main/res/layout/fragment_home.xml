@@ -389,7 +389,6 @@
                     android:text="Sản phẩm"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif"
-                    android:paddingTop="20dp"
                     android:paddingLeft="20dp"
                     android:textStyle="bold"
                     android:paddingBottom="8dp" />

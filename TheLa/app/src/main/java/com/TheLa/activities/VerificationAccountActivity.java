@@ -21,8 +21,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.TheLa.configs.SendMail;
 import com.TheLa.models.User;
 import com.TheLa.services.implement.UserService;
+import com.TheLa.utils.JsonEncryptor;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityVerificationAccountBinding;
+
+import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
@@ -192,33 +195,45 @@ public class VerificationAccountActivity extends AppCompatActivity {
         User user = (User) getIntent().getSerializableExtra("user");
         if (user != null && user.getCreateCode() != null &&
                 ((System.currentTimeMillis() - user.getCreateCode().getTime()) / 1000 <= otpDuration)) {
-            if(code.equals(user.getCode())) {
-                user.setActive(true);
-                if (userService.updateUser(user)) {
-                    if ("ForgotPassword".equals(feature)) {
-                        Toast.makeText(this, "Xác thực thành công! Đang chuyển hướng...", Toast.LENGTH_SHORT).show();
-                        binding.getRoot().postDelayed(() -> {
-                            Intent intent = new Intent(VerificationAccountActivity.this, ForgotPasswordActivity.class);
-                            intent.putExtra("user", user);
-                            startActivity(intent);
-                            finish(); // Đóng activity hiện tại để không giữ nó trong ngăn xếp.
-                        }, 2000);
-                    } else if ("Login".equals(feature) || "Register".equals(feature)) {
-                        Toast.makeText(this, "Xác thực thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
-                        binding.getRoot().postDelayed(() -> {
-                            Intent intent = new Intent(VerificationAccountActivity.this, LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        }, 2000);
+            try {
+                // Giải mã chuỗi mã hóa từ user.getCode()
+                String decryptedCode = JsonEncryptor.decrypt(user.getCode());
+
+                // Lấy giá trị của khóa "otp" từ chuỗi JSON đã giải mã
+                String codeFromUser = new JSONObject(decryptedCode).getString("otp");
+
+                if (code.equals(codeFromUser)) {
+                    user.setActive(true);
+                    if (userService.updateUser(user)) {
+                        if ("ForgotPassword".equals(feature)) {
+                            Toast.makeText(this, "Xác thực thành công! Đang chuyển hướng...", Toast.LENGTH_SHORT).show();
+                            binding.getRoot().postDelayed(() -> {
+                                Intent intent = new Intent(VerificationAccountActivity.this, ForgotPasswordActivity.class);
+                                intent.putExtra("user", user);
+                                startActivity(intent);
+                                finish(); // Đóng activity hiện tại để không giữ nó trong ngăn xếp.
+                            }, 2000);
+                        } else if ("Login".equals(feature) || "Register".equals(feature)) {
+                            Toast.makeText(this, "Xác thực thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
+                            binding.getRoot().postDelayed(() -> {
+                                Intent intent = new Intent(VerificationAccountActivity.this, LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }, 2000);
+                        }
                     }
+                } else {
+                    Toast.makeText(this, "Mã OTP không chính xác, vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(this, "Mã OTP không chính xác, vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Lỗi xử lý mã OTP. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(this, "Mã OTP của bạn đã hết hạn. Vui lòng nhấn 'Gửi lại' để nhận mã mới và thử lại!", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void onBackPressed() {
