@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 import com.TheLa.services.implement.UserService;
 import com.TheLa.configs.SendMail;
 import com.TheLa.utils.Constant;
@@ -136,7 +136,7 @@ public class RegisterActivity extends AppCompatActivity {
             jsonObject.put("otp", code);
             String encryptedCode = JsonEncryptor.encrypt(jsonObject.toString());
 
-            User user = new User(
+            UserModel user = new UserModel(
                     name,
                     email,
                     hashedPassword, // Lưu mật khẩu đã mã hóa
@@ -156,7 +156,7 @@ public class RegisterActivity extends AppCompatActivity {
                     "Cảm ơn bạn đã tham gia cùng chúng tôi!";
 
             if (SendMail.sendEmail(email, subject, message)) {
-                User newUser = userService.addUser(user);
+                UserModel newUser = userService.addUser(user);
                 if (newUser != null) {
                     Intent intent = new Intent(RegisterActivity.this, VerificationAccountActivity.class);
                     intent.putExtra("user", newUser);

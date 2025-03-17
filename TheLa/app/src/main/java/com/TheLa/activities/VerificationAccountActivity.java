@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.TheLa.configs.SendMail;
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 import com.TheLa.services.implement.UserService;
 import com.TheLa.utils.JsonEncryptor;
 import com.example.TheLa.R;
@@ -117,7 +117,7 @@ public class VerificationAccountActivity extends AppCompatActivity {
     }
 
     private void tvSendEmailClick() {
-        User user = (User) getIntent().getSerializableExtra("user");
+        UserModel user = (UserModel) getIntent().getSerializableExtra("user");
 
         String code = SendMail.getRandom();
         user.setCode(code);
@@ -192,7 +192,7 @@ public class VerificationAccountActivity extends AppCompatActivity {
 
         String code = builderStr.toString();
 
-        User user = (User) getIntent().getSerializableExtra("user");
+        UserModel user = (UserModel) getIntent().getSerializableExtra("user");
         if (user != null && user.getCreateCode() != null &&
                 ((System.currentTimeMillis() - user.getCreateCode().getTime()) / 1000 <= otpDuration)) {
             try {

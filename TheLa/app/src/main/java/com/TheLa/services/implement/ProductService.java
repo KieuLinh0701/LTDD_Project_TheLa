@@ -2,7 +2,7 @@ package com.TheLa.services.implement;
 
 import androidx.lifecycle.ViewModel;
 
-import com.TheLa.models.Product;
+import com.TheLa.models.ProductModel;
 import com.TheLa.dao.implement.ProductDao;
 import com.TheLa.services.IProductService;
 
@@ -16,22 +16,22 @@ public class ProductService extends ViewModel implements IProductService {
     }
 
     @Override
-    public List<Product> getAllActiveAndNotDeletedProducts() {
+    public List<ProductModel> getAllActiveAndNotDeletedProducts() {
         return productDao.getAllActiveAndNotDeletedProducts();
     }
 
     @Override
-    public List<Product> get10RecentActiveAndNotDeletedProducts() {
+    public List<ProductModel> get10RecentActiveAndNotDeletedProducts() {
         return productDao.get10RecentActiveAndNotDeletedProducts();
     }
 
     @Override
-    public List<Product> findActiveAndNotDeletedProductsByCategoryId(long categoryId) {
+    public List<ProductModel> findActiveAndNotDeletedProductsByCategoryId(long categoryId) {
         return productDao.findActiveAndNotDeletedProductsByCategoryId(categoryId);
     }
 
     @Override
-    public List<Product> getTop10BestSellingActiveAndNotDeletedProducts() {
+    public List<ProductModel> getTop10BestSellingActiveAndNotDeletedProducts() {
         return productDao.getTop10BestSellingActiveAndNotDeletedProducts();
     }
 }

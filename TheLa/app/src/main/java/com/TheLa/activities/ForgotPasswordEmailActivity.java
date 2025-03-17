@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 import com.TheLa.services.implement.UserService;
 import com.TheLa.configs.SendMail;
 import com.TheLa.utils.JsonEncryptor;
@@ -63,7 +63,7 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
             return;
         }
 
-        User user = userService.getUserFindByEmail(email);
+        UserModel user = userService.getUserFindByEmail(email);
         if (user != null) {
 
             try {

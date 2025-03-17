@@ -76,38 +76,6 @@
                 android:fontFamily="sans-serif"/>
         </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/notiContainer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center">
-
-            <!-- Biểu tượng giỏ hàng -->
-            <ImageView
-                android:id="@+id/notiIcon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_noti"
-                android:contentDescription="Cart Icon"
-                android:scaleType="centerInside"
-                android:tint="@color/white"/>
-
-            <!-- Huy hiệu số lượng -->
-            <TextView
-                android:id="@+id/notiBadge"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="end|top"
-                android:layout_marginEnd="2dp"
-                android:layout_marginTop="2dp"
-                android:background="@drawable/badge_background"
-                android:text="0"
-                android:textColor="@color/green"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:fontFamily="sans-serif"/>
-        </FrameLayout>
-
     </LinearLayout>
 
     <!-- NestedScrollView for content -->
@@ -115,6 +83,9 @@
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingTop="16dp"
+        android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

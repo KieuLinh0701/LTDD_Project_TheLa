@@ -2,8 +2,8 @@ package com.TheLa.dao.implement;
 
 import android.util.Log;
 
-import com.TheLa.models.Category;
 import com.TheLa.dao.ICategoryDao;
+import com.TheLa.models.CategoryModel;
 import com.TheLa.sqlServer.DatabaseHelper;
 
 import java.sql.Connection;
@@ -15,8 +15,8 @@ import java.util.List;
 
 public class CategoryDao implements ICategoryDao {
     @Override
-    public List<Category> getAllActiveAndNotDeletedCategories() {
-        List<Category> categories = new ArrayList<>();
+    public List<CategoryModel> getAllActiveAndNotDeletedCategories() {
+        List<CategoryModel> categories = new ArrayList<>();
 
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
@@ -26,7 +26,7 @@ public class CategoryDao implements ICategoryDao {
                      ResultSet resultSet = preparedStatement.executeQuery()) {
 
                     while (resultSet.next()) {
-                        Category category = new Category();
+                        CategoryModel category = new CategoryModel();
                         category.setCategoryId(resultSet.getLong("categoryId"));
                         category.setName(resultSet.getString("name"));
                         category.setImage(resultSet.getString("image"));

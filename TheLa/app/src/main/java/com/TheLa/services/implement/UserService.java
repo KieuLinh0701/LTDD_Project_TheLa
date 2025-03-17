@@ -3,7 +3,7 @@ package com.TheLa.services.implement;
 import androidx.lifecycle.ViewModel;
 
 import com.TheLa.dao.implement.UserDao;
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 import com.TheLa.services.IUserService;
 
 public class UserService extends ViewModel implements IUserService {
@@ -14,17 +14,17 @@ public class UserService extends ViewModel implements IUserService {
     }
 
     @Override
-    public User addUser(User user) {
+    public UserModel addUser(UserModel user) {
         return userDao.addUser(user);
     }
 
     @Override
-    public boolean updateUser(User user) {
+    public boolean updateUser(UserModel user) {
         return userDao.updateUser(user);
     }
 
     @Override
-    public User getUserFindByEmail(String email) {
+    public UserModel getUserFindByEmail(String email) {
         return userDao.getUserFindByEmail(email);
     }
 }

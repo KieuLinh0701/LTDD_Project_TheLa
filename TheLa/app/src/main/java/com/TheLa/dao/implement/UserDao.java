@@ -2,7 +2,7 @@ package com.TheLa.dao.implement;
 
 import android.util.Log;
 
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 import com.TheLa.dao.IUserDao;
 import com.TheLa.sqlServer.DatabaseHelper;
 
@@ -14,7 +14,7 @@ import java.sql.Statement;
 
 public class UserDao implements IUserDao {
     @Override
-    public User addUser(User user) {
+    public UserModel addUser(UserModel user) {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
                 String sql = "INSERT INTO users (name, email, password, code, address, phone, role, image, isActivate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -52,7 +52,7 @@ public class UserDao implements IUserDao {
     }
 
     @Override
-    public boolean updateUser(User user) {
+    public boolean updateUser(UserModel user) {
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
                 String sql = "UPDATE users SET name = ?, email = ?, password = ?, code = ?, address = ?, phone = ?, role = ?, image = ?, isActivate = ? WHERE userId = ?";
@@ -85,8 +85,8 @@ public class UserDao implements IUserDao {
     }
 
     @Override
-    public User getUserFindByEmail(String email) {
-        User user = null;
+    public UserModel getUserFindByEmail(String email) {
+        UserModel user = null;
 
         // Sử dụng try-with-resources để tự động đóng tài nguyên
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
@@ -98,7 +98,7 @@ public class UserDao implements IUserDao {
                     try (ResultSet resultSet = preparedStatement.executeQuery()) {
                         // Lấy thông tin người dùng nếu tồn tại
                         if (resultSet.next()) {
-                            user = new User(
+                            user = new UserModel(
                                     resultSet.getLong("userId"),
                                     resultSet.getString("name"),
                                     resultSet.getString("email"),

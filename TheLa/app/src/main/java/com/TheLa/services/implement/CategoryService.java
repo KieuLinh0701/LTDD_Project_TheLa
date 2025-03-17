@@ -2,8 +2,8 @@ package com.TheLa.services.implement;
 
 import androidx.lifecycle.ViewModel;
 
-import com.TheLa.models.Category;
 import com.TheLa.dao.implement.CategoryDao;
+import com.TheLa.models.CategoryModel;
 import com.TheLa.services.ICategoryService;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class CategoryService extends ViewModel implements ICategoryService {
     }
 
     @Override
-    public List<Category> getAllActiveAndNotDeletedCategories() {
+    public List<CategoryModel> getAllActiveAndNotDeletedCategories() {
         return categoryDao.getAllActiveAndNotDeletedCategories();
     }
 }

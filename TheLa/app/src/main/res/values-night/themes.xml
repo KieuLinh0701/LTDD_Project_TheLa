@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.TheLa" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.TheLa" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
+        <item name="colorControlActivated">@color/radio_button_color</item>
     </style>
 </resources>

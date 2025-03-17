@@ -2,8 +2,10 @@ package com.TheLa.dao.implement;
 
 import android.util.Log;
 
-import com.TheLa.models.Product;
+import com.TheLa.models.ProductImageModel;
+import com.TheLa.models.ProductModel;
 import com.TheLa.dao.IProductDao;
+import com.TheLa.services.implement.ProductImageService;
 import com.TheLa.sqlServer.DatabaseHelper;
 
 import java.sql.Connection;
@@ -14,9 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDao implements IProductDao {
+    ProductImageService productImageService = new ProductImageService();
     @Override
-    public List<Product> getAllActiveAndNotDeletedProducts() {
-        List<Product> products = new ArrayList<>();
+    public List<ProductModel> getAllActiveAndNotDeletedProducts() {
+        List<ProductModel> productModels = new ArrayList<>();
 
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
@@ -26,19 +29,20 @@ public class ProductDao implements IProductDao {
                      ResultSet resultSet = preparedStatement.executeQuery()) {
 
                     while (resultSet.next()) {
-                        Product product = new Product();
-                        product.setProductId(resultSet.getLong("productId"));
-                        product.setCategoryId(resultSet.getLong("categoryId"));
-                        product.setName(resultSet.getString("name"));
-                        product.setPrice(resultSet.getInt("price"));
-                        product.setImage(resultSet.getString("image"));
-                        product.setDescription(resultSet.getString("description"));
-                        product.setCreateDate(resultSet.getTimestamp("createDate"));
-                        product.setStatus(resultSet.getBoolean("status"));
-                        product.setActive(resultSet.getBoolean("isActive"));
-                        product.setDelete(resultSet.getBoolean("isDelete"));
+                        ProductModel productModel = new ProductModel();
+                        productModel.setProductId(resultSet.getLong("productId"));
+                        productModel.setCategoryId(resultSet.getLong("categoryId"));
+                        productModel.setName(resultSet.getString("name"));
+                        productModel.setDescription(resultSet.getString("description"));
+                        productModel.setCreateDate(resultSet.getTimestamp("createDate"));
+                        productModel.setStatus(resultSet.getBoolean("status"));
+                        productModel.setActive(resultSet.getBoolean("isActive"));
+                        productModel.setDelete(resultSet.getBoolean("isDelete"));
 
-                        products.add(product);
+                        List<ProductImageModel> listProductImageModel = productImageService.findProductImageByProduct(productModel.getProductId());
+                        productModel.setListProductImageModelList(listProductImageModel);
+
+                        productModels.add(productModel);
                     }
                 }
             } else {
@@ -48,12 +52,12 @@ public class ProductDao implements IProductDao {
             e.printStackTrace();
         }
 
-        return products;
+        return productModels;
     }
 
     @Override
-    public List<Product> get10RecentActiveAndNotDeletedProducts() {
-        List<Product> products = new ArrayList<>();
+    public List<ProductModel> get10RecentActiveAndNotDeletedProducts() {
+        List<ProductModel> productModels = new ArrayList<>();
 
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
@@ -65,19 +69,20 @@ public class ProductDao implements IProductDao {
                      ResultSet resultSet = preparedStatement.executeQuery()) {
 
                     while (resultSet.next()) {
-                        Product product = new Product();
-                        product.setProductId(resultSet.getLong("productId"));
-                        product.setCategoryId(resultSet.getLong("categoryId"));
-                        product.setName(resultSet.getString("name"));
-                        product.setPrice(resultSet.getInt("price"));
-                        product.setImage(resultSet.getString("image"));
-                        product.setDescription(resultSet.getString("description"));
-                        product.setCreateDate(resultSet.getTimestamp("createDate"));
-                        product.setStatus(resultSet.getBoolean("status"));
-                        product.setActive(resultSet.getBoolean("isActive"));
-                        product.setDelete(resultSet.getBoolean("isDelete"));
+                        ProductModel productModel = new ProductModel();
+                        productModel.setProductId(resultSet.getLong("productId"));
+                        productModel.setCategoryId(resultSet.getLong("categoryId"));
+                        productModel.setName(resultSet.getString("name"));
+                        productModel.setDescription(resultSet.getString("description"));
+                        productModel.setCreateDate(resultSet.getTimestamp("createDate"));
+                        productModel.setStatus(resultSet.getBoolean("status"));
+                        productModel.setActive(resultSet.getBoolean("isActive"));
+                        productModel.setDelete(resultSet.getBoolean("isDelete"));
 
-                        products.add(product);
+                        List<ProductImageModel> listProductImageModel = productImageService.findProductImageByProduct(productModel.getProductId());
+                        productModel.setListProductImageModelList(listProductImageModel);
+
+                        productModels.add(productModel);
                     }
                 }
             } else {
@@ -86,12 +91,12 @@ public class ProductDao implements IProductDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return products;
+        return productModels;
     }
 
     @Override
-    public List<Product> getTop10BestSellingActiveAndNotDeletedProducts() {
-        List<Product> products = new ArrayList<>();
+    public List<ProductModel> getTop10BestSellingActiveAndNotDeletedProducts() {
+        List<ProductModel> productModels = new ArrayList<>();
 
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
@@ -107,19 +112,20 @@ public class ProductDao implements IProductDao {
                      ResultSet resultSet = preparedStatement.executeQuery()) {
 
                     while (resultSet.next()) {
-                        Product product = new Product();
-                        product.setProductId(resultSet.getLong("productId"));
-                        product.setCategoryId(resultSet.getLong("categoryId"));
-                        product.setName(resultSet.getString("name"));
-                        product.setPrice(resultSet.getInt("price"));
-                        product.setImage(resultSet.getString("image"));
-                        product.setDescription(resultSet.getString("description"));
-                        product.setCreateDate(resultSet.getTimestamp("createDate"));
-                        product.setStatus(resultSet.getBoolean("status"));
-                        product.setActive(resultSet.getBoolean("isActive"));
-                        product.setDelete(resultSet.getBoolean("isDelete"));
+                        ProductModel productModel = new ProductModel();
+                        productModel.setProductId(resultSet.getLong("productId"));
+                        productModel.setCategoryId(resultSet.getLong("categoryId"));
+                        productModel.setName(resultSet.getString("name"));
+                        productModel.setDescription(resultSet.getString("description"));
+                        productModel.setCreateDate(resultSet.getTimestamp("createDate"));
+                        productModel.setStatus(resultSet.getBoolean("status"));
+                        productModel.setActive(resultSet.getBoolean("isActive"));
+                        productModel.setDelete(resultSet.getBoolean("isDelete"));
 
-                        products.add(product);
+                        List<ProductImageModel> listProductImageModel = productImageService.findProductImageByProduct(productModel.getProductId());
+                        productModel.setListProductImageModelList(listProductImageModel);
+
+                        productModels.add(productModel);
                     }
                 }
             } else {
@@ -128,12 +134,12 @@ public class ProductDao implements IProductDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return products;
+        return productModels;
     }
 
     @Override
-    public List<Product> findActiveAndNotDeletedProductsByCategoryId(long categoryId) {
-        List<Product> products = new ArrayList<>();
+    public List<ProductModel> findActiveAndNotDeletedProductsByCategoryId(long categoryId) {
+        List<ProductModel> productModels = new ArrayList<>();
 
         try (Connection connection = DatabaseHelper.connectToDatabase()) {
             if (connection != null) {
@@ -148,19 +154,20 @@ public class ProductDao implements IProductDao {
                     // Thực hiện truy vấn và xử lý kết quả
                     try (ResultSet resultSet = preparedStatement.executeQuery()) {
                         while (resultSet.next()) {
-                            Product product = new Product();
-                            product.setProductId(resultSet.getLong("productId"));
-                            product.setCategoryId(resultSet.getLong("categoryId"));
-                            product.setName(resultSet.getString("name"));
-                            product.setPrice(resultSet.getInt("price"));
-                            product.setImage(resultSet.getString("image"));
-                            product.setDescription(resultSet.getString("description"));
-                            product.setCreateDate(resultSet.getTimestamp("createDate"));
-                            product.setStatus(resultSet.getBoolean("status"));
-                            product.setActive(resultSet.getBoolean("isActive"));
-                            product.setDelete(resultSet.getBoolean("isDelete"));
+                            ProductModel productModel = new ProductModel();
+                            productModel.setProductId(resultSet.getLong("productId"));
+                            productModel.setCategoryId(resultSet.getLong("categoryId"));
+                            productModel.setName(resultSet.getString("name"));
+                            productModel.setDescription(resultSet.getString("description"));
+                            productModel.setCreateDate(resultSet.getTimestamp("createDate"));
+                            productModel.setStatus(resultSet.getBoolean("status"));
+                            productModel.setActive(resultSet.getBoolean("isActive"));
+                            productModel.setDelete(resultSet.getBoolean("isDelete"));
 
-                            products.add(product);
+                            List<ProductImageModel> listProductImageModel = productImageService.findProductImageByProduct(productModel.getProductId());
+                            productModel.setListProductImageModelList(listProductImageModel);
+
+                            productModels.add(productModel);
                         }
                     }
                 }
@@ -170,7 +177,7 @@ public class ProductDao implements IProductDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return products;
+        return productModels;
     }
 }
 

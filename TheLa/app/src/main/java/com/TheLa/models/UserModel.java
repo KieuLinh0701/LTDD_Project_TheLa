@@ -3,7 +3,7 @@ package com.TheLa.models;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class User implements Serializable {
+public class UserModel implements Serializable {
     private Long userId;
     private String name;
     private String email;
@@ -16,11 +16,11 @@ public class User implements Serializable {
     private Timestamp createCode;
     private Boolean isActive;
 
-    public User(){
+    public UserModel(){
 
     }
 
-    public User(Long userId, String name, String email, String password, String code, String address, String phone, String role, String image, Timestamp createCode, Boolean isActive) {
+    public UserModel(Long userId, String name, String email, String password, String code, String address, String phone, String role, String image, Timestamp createCode, Boolean isActive) {
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -34,7 +34,7 @@ public class User implements Serializable {
         this.isActive = isActive;
     }
 
-    public User(Long userId, String name, String email, String password, String code, String address, String phone, String role, String image, Boolean isActive) {
+    public UserModel(Long userId, String name, String email, String password, String code, String address, String phone, String role, String image, Boolean isActive) {
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -47,7 +47,7 @@ public class User implements Serializable {
         this.isActive = isActive;
     }
 
-    public User(String name, String email, String password, String code, String address, String phone, String role, String image, Timestamp createCode, Boolean isActive) {
+    public UserModel(String name, String email, String password, String code, String address, String phone, String role, String image, Timestamp createCode, Boolean isActive) {
         this.name = name;
         this.email = email;
         this.password = password;

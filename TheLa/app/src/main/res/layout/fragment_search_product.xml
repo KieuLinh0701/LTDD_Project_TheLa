@@ -53,71 +53,16 @@
             android:inputType="text"
             android:textAllCaps="false" />
 
-        <!-- Cart icon -->
-        <FrameLayout
-            android:id="@+id/cartContainer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_gravity="center">
-
-            <!-- Biểu tượng giỏ hàng -->
-            <ImageView
-                android:id="@+id/cartIcon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_cart"
-                android:contentDescription="Cart Icon"
-                android:scaleType="centerInside"
-                app:tint="@color/white"/>
-
-            <!-- Huy hiệu số lượng -->
-            <TextView
-                android:id="@+id/cartBadge"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="end|top"
-                android:layout_marginEnd="2dp"
-                android:layout_marginTop="2dp"
-                android:background="@drawable/badge_background"
-                android:text="0"
-                android:textColor="@color/green"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:fontFamily="sans-serif"/>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/notiContainer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center">
-
-            <!-- Biểu tượng giỏ hàng -->
-            <ImageView
-                android:id="@+id/notiIcon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_noti"
-                android:contentDescription="Cart Icon"
-                android:scaleType="centerInside"
-                app:tint="@color/white"/>
-
-            <!-- Huy hiệu số lượng -->
-            <TextView
-                android:id="@+id/notiBadge"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="end|top"
-                android:layout_marginEnd="2dp"
-                android:layout_marginTop="2dp"
-                android:background="@drawable/badge_background"
-                android:text="0"
-                android:textColor="@color/green"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:fontFamily="sans-serif"/>
-        </FrameLayout>
+        <ImageView
+            android:id="@+id/filterIcon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_filter"
+            android:contentDescription="filter Icon"
+            android:scaleType="centerInside"
+            app:tint="@color/white"/>
 
     </LinearLayout>
 
@@ -126,73 +71,36 @@
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
         android:paddingTop="16dp"
+        android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Content layout -->
+
+    <!-- Content layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoryRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="8dp"
-                android:background="@color/white">
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_category" />
 
-                <!-- TextView: DANH MỤC SẢN PHẨM -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Danh mục sản phẩm"
-                    android:paddingTop="20dp"
-                    android:paddingLeft="20dp"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp" />
-
-                <!-- RecyclerView: Category List -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categoryRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_category" />
-            </LinearLayout>
-
-            <LinearLayout
+            <!-- RecyclerView: Product List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/productRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="8dp"
-                android:background="@color/white">
-
-                <!-- TextView: SẢN PHẨM -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sản phẩm"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif"
-                    android:paddingLeft="20dp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp" />
-
-                <!-- RecyclerView: Product List -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/productRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    tools:listitem="@layout/item_product" />
-            </LinearLayout>
+                tools:listitem="@layout/item_product" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

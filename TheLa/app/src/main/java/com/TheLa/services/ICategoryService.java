@@ -1,9 +1,9 @@
 package com.TheLa.services;
 
-import com.TheLa.models.Category;
+import com.TheLa.models.CategoryModel;
 
 import java.util.List;
 
 public interface ICategoryService {
-    List<Category> getAllActiveAndNotDeletedCategories();
+    List<CategoryModel> getAllActiveAndNotDeletedCategories();
 }

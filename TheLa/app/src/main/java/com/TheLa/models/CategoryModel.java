@@ -1,6 +1,6 @@
 package com.TheLa.models;
 
-public class Category {
+public class CategoryModel {
     private Long categoryId;
     private String name;
     private String image;
@@ -56,4 +56,5 @@ public class Category {
         isSelected = selected;
     }
 }
+
 

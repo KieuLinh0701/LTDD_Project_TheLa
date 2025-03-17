@@ -15,14 +15,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 import com.TheLa.services.implement.UserService;
-import com.TheLa.utils.JsonEncryptor;
 import com.TheLa.utils.PasswordUtils;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityForgotpasswordBinding;
-
-import org.json.JSONObject;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     ActivityForgotpasswordBinding binding;
@@ -110,7 +107,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        User user = (User) getIntent().getSerializableExtra("user");
+        UserModel user = (UserModel) getIntent().getSerializableExtra("user");
         if (user != null) {
             try {
                 String hashedPassword = PasswordUtils.hashPassword(pass);

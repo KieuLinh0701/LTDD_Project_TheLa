@@ -1,9 +1,9 @@
 package com.TheLa.dao;
 
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 
 public interface IUserDao {
-    User addUser(User user);
-    boolean updateUser(User user);
-    User getUserFindByEmail(String email);
+    UserModel addUser(UserModel user);
+    boolean updateUser(UserModel user);
+    UserModel getUserFindByEmail(String email);
 }

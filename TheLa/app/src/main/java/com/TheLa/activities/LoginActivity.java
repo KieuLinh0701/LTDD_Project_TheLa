@@ -20,7 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.TheLa.models.User;
+import com.TheLa.models.UserModel;
 import com.TheLa.services.implement.UserService;
 import com.TheLa.configs.SendMail;
 import com.TheLa.utils.JsonEncryptor;
@@ -50,10 +50,10 @@ public class LoginActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-//         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
-//         if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
-//            switchToHomeActivity();
-//         }
+         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
+         if (sharedPreferenceManager.getStringValue(SharedPreferenceManager.AUTH_TOKEN) != null) {
+            switchToHomeActivity();
+         }
 
         addEvents();
     }
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        User user = userService.getUserFindByEmail(email);
+        UserModel user = userService.getUserFindByEmail(email);
         if (user != null && user.getPassword() != null && PasswordUtils.verifyPassword(password, user.getPassword())) {
             if (user.getActive()) {
                 SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(LoginActivity.this);

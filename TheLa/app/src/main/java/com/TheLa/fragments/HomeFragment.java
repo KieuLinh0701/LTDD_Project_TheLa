@@ -1,6 +1,5 @@
 package com.TheLa.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -12,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.TheLa.adapters.CategoryAdapter;
 import com.TheLa.adapters.ProductAdapter;
 import com.TheLa.fragments.home.BestSellerFragment;
 import com.TheLa.fragments.home.LatestProductFragment;
+import com.TheLa.fragments.home.ProductDetailFragment;
 import com.TheLa.fragments.home.SearchProductFragment;
-import com.TheLa.models.Category;
-import com.TheLa.models.Product;
+import com.TheLa.models.CategoryModel;
+import com.TheLa.models.ProductModel;
 import com.TheLa.services.implement.CategoryService;
 import com.TheLa.services.implement.ProductService;
 import com.example.TheLa.R;
@@ -44,15 +43,16 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        setupRecyclerViews(view);
+        setCategoryRecyclerView(view);
+        setupProductRecyclerView(view);
 
-        setupLatestCardView(view);
-        setupBestSellerCardView(view);
+        setLatestCardView(view);
+        setBestSellerCardView(view);
 
         return view;
     }
 
-    private void setupBestSellerCardView(View view) {
+    private void setBestSellerCardView(View view) {
         CardView bestSellerCardView = view.findViewById(R.id.bestSeller);
 
         bestSellerCardView.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void setupLatestCardView(View view) {
+    private void setLatestCardView(View view) {
         CardView latestCardView = view.findViewById(R.id.latest);
 
         latestCardView.setOnClickListener(new View.OnClickListener() {
@@ -82,27 +82,48 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void setupRecyclerViews(View view) {
-        // Product
+    private void setupProductRecyclerView(View view) {
         productRecyclerView = view.findViewById(R.id.productRecyclerView);
         productRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        List<Product> productList = productService.getAllActiveAndNotDeletedProducts();
+        List<ProductModel> productModelList = productService.getAllActiveAndNotDeletedProducts();
 
-        productAdapter = new ProductAdapter(productList, getContext());
+        productAdapter = new ProductAdapter(productModelList, getContext(), position -> {
+            ProductModel clickedProduct = productModelList.get(position);
+
+            ProductDetailFragment productDetailFragment = new ProductDetailFragment();
+
+            // Tạo một Bundle để truyền dữ liệu
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("product", clickedProduct); // Truyền ProductModel qua Bundle (ProductModel cần implements Serializable)
+            productDetailFragment.setArguments(bundle);
+
+            // Thay thế Fragment hiện tại bằng Fragment mới với hiệu ứng
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in_bottom,  // Hiệu ứng khi Fragment mới xuất hiện
+                            android.R.anim.fade_out,   // Hiệu ứng khi Fragment cũ biến mất
+                            android.R.anim.fade_out, // Hiệu ứng khi quay lại Fragment cũ
+                            R.anim.slide_out_bottom    // Hiệu ứng khi Fragment mới biến mất
+                    )
+                    .replace(R.id.fragment_home, productDetailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         productRecyclerView.setAdapter(productAdapter);
+    }
 
-        // Category
+    private void setCategoryRecyclerView(View view) {
         categoryRecyclerView = view.findViewById(R.id.categoryRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         categoryRecyclerView.setLayoutManager(layoutManager);
 
-        List<Category> categoryList = categoryService.getAllActiveAndNotDeletedCategories();
+        List<CategoryModel> categoryList = categoryService.getAllActiveAndNotDeletedCategories();
 
-        // Truyền OnItemClickListener vào Adapter
         categoryAdapter = new CategoryAdapter(categoryList, getContext(), position -> {
-            // Xử lý sự kiện click vào một category
-            Category clickedCategory = categoryList.get(position);
+            CategoryModel clickedCategory = categoryList.get(position);
 
             SearchProductFragment searchProductFragment = new SearchProductFragment();
 
