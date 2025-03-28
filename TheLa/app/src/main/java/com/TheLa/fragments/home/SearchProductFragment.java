@@ -10,13 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.TheLa.adapters.CategoryAdapter;
 import com.TheLa.adapters.ProductAdapter;
 import com.TheLa.models.CategoryModel;
 import com.TheLa.models.ProductModel;
+import com.TheLa.models.ReviewModel;
 import com.TheLa.services.implement.CategoryService;
 import com.TheLa.services.implement.ProductService;
+import com.TheLa.services.implement.ReviewService;
 import com.example.TheLa.R;
 
 import java.util.List;

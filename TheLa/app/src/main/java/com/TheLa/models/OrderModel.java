@@ -1,9 +1,10 @@
 package com.TheLa.models;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-public class OrderModel {
+public class OrderModel implements Serializable {
     private Long orderId;
     private Long userId;
     private BigDecimal totalPrice;

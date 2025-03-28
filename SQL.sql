@@ -85,6 +85,23 @@ CREATE TABLE order_details (
 );
 GO
 
+CREATE TABLE reviews (
+    reviewId BIGINT PRIMARY KEY IDENTITY,
+    productId BIGINT NOT NULL,
+    userId BIGINT NOT NULL, 
+    rating INT CHECK (rating BETWEEN 1 AND 5), -- Số sao (1 đến 5)
+    content NVARCHAR(500), -- Nội dung đánh giá
+    reviewDate DATETIME DEFAULT CURRENT_TIMESTAMP, -- Thời gian đánh giá
+    FOREIGN KEY (productId) REFERENCES products(productId), 
+	FOREIGN KEY (userId) REFERENCES users(userId)
+);
+
+CREATE TABLE reviewImages (
+    imageId BIGINT IDENTITY(1,1) PRIMARY KEY,
+    reviewId BIGINT NOT NULL,
+    image NVARCHAR(255) NOT NULL,
+    FOREIGN KEY (reviewId) REFERENCES reviews(reviewId)
+);
 
 INSERT INTO categories (name, image, isActive, isDelete)
 VALUES
@@ -125,3 +142,62 @@ VALUES
 (8, 'img_prod_milk_tea_matcha', 1),
 (9, 'img_prod_topping_black_pearl', 1),
 (10, 'img_prod_topping_white_pearl', 1);
+
+INSERT INTO productSizes (productId, sizeId, price)
+VALUES
+-- Cà phê đen
+(1, 1, 15000), -- Size S
+(1, 2, 20000), -- Size M
+(1, 3, 25000), -- Size L
+-- Cà phê sữa
+(2, 1, 20000), -- Size S
+(2, 2, 25000), -- Size M
+(2, 3, 30000), -- Size L
+-- Trà đào
+(3, 1, 25000), -- Size S
+(3, 2, 30000), -- Size M
+(3, 3, 35000), -- Size L
+-- Trà lài
+(4, 1, 20000), -- Size S
+(4, 2, 25000), -- Size M
+(4, 3, 30000), -- Size L
+-- Sinh tố bơ
+(5, 1, 40000), -- Size S
+(5, 2, 45000), -- Size M
+(5, 3, 50000), -- Size L
+-- Sinh tố dâu
+(6, 1, 35000), -- Size S
+(6, 2, 40000), -- Size M
+(6, 3, 45000), -- Size L
+-- Trà sữa truyền thống
+(7, 1, 30000), -- Size S
+(7, 2, 35000), -- Size M
+(7, 3, 40000), -- Size L
+-- Trà sữa matcha
+(8, 1, 35000), -- Size S
+(8, 2, 40000), -- Size M
+(8, 3, 45000), -- Size L
+-- Trân châu đen
+(9, 4, 10000), -- Tiêu chuẩn
+-- Trân châu trắng
+(10, 4, 12000); -- Tiêu chuẩn
+
+INSERT INTO reviews (productId, userId, rating, content, reviewDate)
+VALUES 
+-- Review cho sản phẩm "Cà phê đen" (productId = 1)
+(1, 1, 5, N'Cà phê đen thơm ngon, đậm vị, rất đáng để thưởng thức.', '2025-03-25 10:30:00'),
+(1, 1, 4, N'Hương vị tốt nhưng gói hàng bị trễ một chút.', '2025-03-25 12:00:00'),
+-- Review cho sản phẩm "Cà phê sữa" (productId = 2)
+(2, 1, 5, N'Cà phê sữa ngọt dịu, cân bằng, phù hợp khẩu vị của tôi.', '2025-03-26 08:15:00'),
+(2, 1, 3, N'Hương vị ổn nhưng không quá đặc biệt, phù hợp để uống hàng ngày.', '2025-03-26 09:00:00');
+
+INSERT INTO reviewImages (reviewId, image) 
+VALUES 
+    (1, 'img_review_cafe_den_1'),
+    (1, 'img_review_cafe_den_2'),
+    (3, 'img_review_cafe_sua_1'),
+    (3, 'img_review_cafe_sua_2'),
+    (4, 'img_review_cafe_sua_3');
+
+
+

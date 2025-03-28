@@ -1,4 +1,6 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,93 +9,327 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <!-- RecyclerView hiển thị nhiều ảnh -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/imageRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.3"
-        android:orientation="horizontal"
-        android:background="@color/white"
-        tools:listitem="@layout/item_product_image" />
-
-    <!-- Nút đóng (icon tắt) -->
-    <ImageButton
-        android:id="@+id/btnClose"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/circle_background"
-        android:src="@drawable/ic_close"
-        android:scaleType="centerInside"
-        app:layout_constraintTop_toTopOf="@id/imageRecyclerView"
-        app:layout_constraintStart_toStartOf="@id/imageRecyclerView" />
-
-    <!-- Container cho Tên sản phẩm và Icon -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/productNameContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/imageRecyclerView"
-        app:layout_constraintBottom_toTopOf="@id/tabLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-        <!-- Icon -->
-        <ImageView
-            android:id="@+id/productIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_product"
-            app:tint="@color/green"
-            app:layout_constraintEnd_toStartOf="@id/productName"
-            app:layout_constraintEnd_toEndOf="parent"
+        <!-- Nút đóng cố định trên cùng -->
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_background_gray"
+            android:src="@drawable/ic_close"
+            android:scaleType="centerInside"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:elevation="8dp" />
 
-        <!-- Tên sản phẩm -->
-        <TextView
-            android:id="@+id/productName"
+        <!-- Nội dung có thể cuộn -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Tên sản phẩm"
-            android:fontFamily="sans-serif"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:layout_marginStart="12dp"
-            app:layout_constraintStart_toEndOf="@id/productIcon"/>
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btnAddCart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clipToPadding="false">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <!-- RecyclerView for product images -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/imageRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                tools:listitem="@layout/item_product_image" />
+
+            <!-- Product name and icon -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/productNameContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <ImageView
+                    android:id="@+id/productIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_product"
+                    app:tint="@color/green"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <TextView
+                    android:id="@+id/productName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Tên sản phẩm"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toEndOf="@id/productIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Product description -->
+            <TextView
+                android:id="@+id/tv_title_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Mô tả"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="Mô tả sản phẩm chi tiết"
+                android:textSize="14sp"
+                android:textColor="@color/dark_gray" />
+
+            <!-- Vùng đánh giá -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#F2F8FC"
+                android:padding="16dp">
+
+                <!-- Tiêu đề và Icon -->
+                <TextView
+                    android:id="@+id/tv_title_review"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Mọi người nhận xét"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/btnMoreReview"
+                    app:layout_constraintBottom_toBottomOf="@id/btnMoreReview" />
+
+                <ImageView
+                    android:id="@+id/btnMoreReview"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_right"
+                    android:background="@drawable/circle_background_white"
+                    android:contentDescription="Xem thêm"
+                    app:tint="@color/green"
+                    android:padding="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_title_review" />
+
+                <!-- CardView nằm dưới tiêu đề -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title_review"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- Nội dung đánh giá -->
+                        <TextView
+                            android:id="@+id/tv_review_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Chào Bếp. Đơn hàng vừa rồi rất OK. Sẽ ủng hộ Bếp lâu dài ạ ! Chân thành."
+                            android:textStyle="italic"
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif"
+                            android:textColor="@color/black" />
+
+                        <!-- Thông tin người đánh giá -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <!-- Icon đánh giá (ngôi sao) -->
+                            <ImageView
+                                android:id="@+id/ic_star"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_star"
+                                android:contentDescription="Star Icon"/>
+
+                            <!-- Số điểm đánh giá -->
+                            <TextView
+                                android:id="@+id/tv_review_rating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="5"
+                                android:textSize="12sp"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/tv_empty"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text=" • "
+                                android:textSize="12sp"
+                                android:textColor="@color/black" />
+
+                            <!-- Tên -->
+                            <TextView
+                                android:id="@+id/tv_review_owner"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="BÙI QUANG MINH"
+                                android:textSize="12sp"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- TabLayout -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+            <!-- Size selection -->
+            <TextView
+                android:id="@+id/tv_drink_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Chọn size"
+                android:textSize="16sp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_product_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/edit_gray" />
+
+            <!-- Notes -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Thêm lưu ý cho quán"
+                android:textSize="16sp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/et_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp"
+                android:layout_marginTop="8dp"
+                android:hint="Việc thực hiện yêu cầu còn tùy thuộc vào khả năng của quán."
+                android:textSize="14sp"
+                android:background="@drawable/edittext_background_border"
+                android:gravity="start|top"
+                android:maxLines="5"
+                android:maxLength="200"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="8dp"/>
+
+            <!-- Quantity controls -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_minus"
+                    android:backgroundTint="@color/edit_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:text="1"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_plus_circle" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Add to cart button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAddCart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/green"
-        app:tabSelectedTextColor="@color/green"
-        app:tabRippleColor="#AED3BE"
-        app:tabTextColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/productNameContainer"
+        android:text="Thêm vào giỏ hàng"
+        android:background="@drawable/button_background"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- ViewPager2 -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -1,6 +1,8 @@
 package com.TheLa.models;
 
-public class SizeModel {
+import java.io.Serializable;
+
+public class SizeModel implements Serializable {
     private Long sizeId;
     private String name;
     private String description;

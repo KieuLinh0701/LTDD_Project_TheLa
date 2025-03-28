@@ -1,8 +1,9 @@
 package com.TheLa.models;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ProductSizeModel {
+public class ProductSizeModel implements Serializable {
     private Long productSizeId;
     private SizeModel size;
     private ProductModel product;

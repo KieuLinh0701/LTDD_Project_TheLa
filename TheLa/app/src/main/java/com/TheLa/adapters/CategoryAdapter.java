@@ -64,7 +64,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         if (category.isSelected()) {
             holder.categoryImage.setBackgroundResource(R.drawable.circle_border); // Viền xanh
         } else {
-            holder.categoryImage.setBackgroundResource(R.drawable.circle_background); // Xóa viền
+            holder.categoryImage.setBackgroundResource(R.drawable.circle_background_gray); // Xóa viền
         }
 
         holder.itemView.setOnClickListener(v -> {

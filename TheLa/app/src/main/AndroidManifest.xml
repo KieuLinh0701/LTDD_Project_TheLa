@@ -15,6 +15,9 @@
         android:theme="@style/Theme.TheLa"
         tools:targetApi="31">
         <activity
+            android:name="com.TheLa.activities.FullScreenImageActivity"
+            android:exported="false" />
+        <activity
             android:name="com.TheLa.activities.MainActivity"
             android:exported="true">
             <intent-filter>

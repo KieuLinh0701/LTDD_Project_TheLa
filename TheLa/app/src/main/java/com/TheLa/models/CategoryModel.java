@@ -1,6 +1,8 @@
 package com.TheLa.models;
 
-public class CategoryModel {
+import java.io.Serializable;
+
+public class CategoryModel implements Serializable {
     private Long categoryId;
     private String name;
     private String image;

@@ -27,4 +27,9 @@ public class UserService extends ViewModel implements IUserService {
     public UserModel getUserFindByEmail(String email) {
         return userDao.getUserFindByEmail(email);
     }
+
+    @Override
+    public UserModel getUserFindByUserId(Long userId) {
+        return userDao.getUserFindByUserId(userId);
+    }
 }

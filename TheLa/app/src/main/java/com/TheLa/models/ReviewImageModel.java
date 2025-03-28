@@ -2,11 +2,10 @@ package com.TheLa.models;
 
 import java.io.Serializable;
 
-public class ProductImageModel implements Serializable {
+public class ReviewImageModel implements Serializable {
     private Long imageId;
-    private Long productId;
+    private Long reviewId;
     private String image;
-    private Boolean isMain;
 
     public String getImage() {
         return image;
@@ -20,23 +19,15 @@ public class ProductImageModel implements Serializable {
         return imageId;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
     public void setImageId(Long imageId) {
         this.imageId = imageId;
     }
 
-    public Boolean getMain() {
-        return isMain;
+    public Long getReviewId() {
+        return reviewId;
     }
 
-    public void setMain(Boolean main) {
-        isMain = main;
+    public void setReviewId(Long reviewId) {
+        this.reviewId = reviewId;
     }
 }

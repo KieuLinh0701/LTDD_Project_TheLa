@@ -1,8 +1,9 @@
 package com.TheLa.models;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderDetailModel {
+public class OrderDetailModel implements Serializable {
     private Long orderDetailId;
     private Long orderId;
     private Long productSizeId;

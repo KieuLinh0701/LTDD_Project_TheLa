@@ -122,5 +122,43 @@ public class UserDao implements IUserDao {
         return user;
     }
 
+    @Override
+    public UserModel getUserFindByUserId(Long userId) {
+        UserModel user = null;
+
+        // Sử dụng try-with-resources để tự động đóng tài nguyên
+        try (Connection connection = DatabaseHelper.connectToDatabase()) {
+            if (connection != null) {
+                String sql = "SELECT * FROM users WHERE userId = ?";
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                    preparedStatement.setLong(1, userId);
+
+                    try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                        // Lấy thông tin người dùng nếu tồn tại
+                        if (resultSet.next()) {
+                            user = new UserModel(
+                                    resultSet.getLong("userId"),
+                                    resultSet.getString("name"),
+                                    resultSet.getString("email"),
+                                    resultSet.getString("password"),
+                                    resultSet.getString("code"),
+                                    resultSet.getString("address"),
+                                    resultSet.getString("phone"),
+                                    resultSet.getString("role"),
+                                    resultSet.getString("image"),
+                                    resultSet.getBoolean("isActivate")
+                            );
+                        }
+                    }
+                }
+            } else {
+                Log.w("Connection", "Connection is null");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
 }
 
