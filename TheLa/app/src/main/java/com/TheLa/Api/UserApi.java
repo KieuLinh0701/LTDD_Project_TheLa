@@ -28,4 +28,10 @@ public interface UserApi {
 
     @PUT("/reset-password")
     Call<ApiResponse> resetPassword(@Body ResetPasswordDto resetPasswordDto);
+
+    @GET("/send-email-reset-email")
+    Call<ApiResponse> sendEmailResetEmail(@Query("oldEmail") String oldEmail, @Query("newEmail") String newEmail);
+
+    @PUT("/save")
+    Call<ApiResponse> save(@Body UserDto userDto);
 }

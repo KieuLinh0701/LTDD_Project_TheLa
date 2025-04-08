@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,8 +20,6 @@ import com.TheLa.Api.ApiResponse;
 import com.TheLa.Api.UserApi;
 import com.TheLa.activities.VerificationAccountActivity;
 import com.TheLa.dto.UserDto;
-import com.TheLa.fragments.MeFragment;
-import com.TheLa.utils.AppUtils;
 import com.TheLa.utils.SharedPreferenceManager;
 import com.example.TheLa.R;
 import com.google.gson.Gson;

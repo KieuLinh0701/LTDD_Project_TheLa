@@ -1,8 +1,10 @@
 package com.TheLa.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -148,8 +150,17 @@ public class MeFragment extends Fragment {
     }
 
     private void emailClick() {
-        AppUtils.setBottomNavigationVisibility(this, false);
-        AppUtils.checkLogin(R.id.fragment_me, getContext(), this, new ChangeEmailFragment());
+        if (preferenceManager.isLoggedIn()) {
+            AppUtils.setBottomNavigationVisibility(this, false);
+
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_me, new ChangeEmailFragment())
+                    .addToBackStack("ChangeEmailFragment")
+                    .commit();
+        } else {
+            AppUtils.switchToLoginActivity(getContext());
+        }
     }
 
     private void myAddressClick() {
@@ -205,4 +216,12 @@ public class MeFragment extends Fragment {
             tvEmail.setText(email);
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Cập nhật lại dữ liệu khi quay lại fragment
+        initializeData();
+    }
+
 }
