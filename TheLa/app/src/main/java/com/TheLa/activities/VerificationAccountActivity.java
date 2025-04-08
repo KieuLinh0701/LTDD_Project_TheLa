@@ -1,6 +1,7 @@
 package com.TheLa.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,25 +18,33 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.FragmentManager;
 
-import com.TheLa.configs.SendMail;
-import com.TheLa.models.UserModel;
-import com.TheLa.services.implement.UserService;
-import com.TheLa.utils.JsonEncryptor;
+import com.TheLa.Api.ApiClient;
+import com.TheLa.Api.ApiResponse;
+import com.TheLa.Api.UserApi;
+import com.TheLa.dto.UserDto;
+import com.TheLa.dto.VerifyAccountDto;
+import com.TheLa.fragments.MeFragment;
+import com.TheLa.utils.AppUtils;
+import com.TheLa.utils.Constant;
+import com.TheLa.utils.SharedPreferenceManager;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityVerificationAccountBinding;
+import com.google.gson.Gson;
 
-import org.json.JSONObject;
+import java.io.IOException;
 
-import java.sql.Timestamp;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class VerificationAccountActivity extends AppCompatActivity {
-    private int otpDuration = 180;
+    private int otpDuration = Constant.OTP_DURATION;
     ActivityVerificationAccountBinding binding;
-    UserService userService;
     EditText[] otpInputs;
-    String feature;
+    String feature, email;
+    boolean clickTvSendEmail = false;
     private TextView tvTime, tvSendEmail;
 
 
@@ -43,21 +53,18 @@ public class VerificationAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityVerificationAccountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
-
-        userService = new ViewModelProvider(this).get(UserService.class);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         feature = getIntent().getStringExtra("feature");
+        email = getIntent().getStringExtra("email");
 
         if ("Login".equals(feature)) {
-            binding.tvTitle.setText("Đăng nhập");
+            binding.tvTitle.setText("Login");
         } else if ("Register".equals(feature)) {
-            binding.tvTitle.setText("Đăng ký");
+            binding.tvTitle.setText("Sign Up");
         } else if ("ForgotPassword".equals(feature)) {
-                binding.tvTitle.setText("Quên mật khẩu");
+            binding.tvTitle.setText("Forgot Password");
+        } else if ("ChangePassword".equals(feature)) {
+            binding.tvTitle.setText("Change Password");
         }
 
         tvTime = binding.tvTime;
@@ -117,36 +124,54 @@ public class VerificationAccountActivity extends AppCompatActivity {
     }
 
     private void tvSendEmailClick() {
-        UserModel user = (UserModel) getIntent().getSerializableExtra("user");
-
-        String code = SendMail.getRandom();
-        user.setCode(code);
-        user.setCreateCode(new Timestamp(System.currentTimeMillis()));
-
-        String subject = null;
-        String message = null;
-        if ("Login".equals(feature) || "Register".equals(feature)) {
-            subject  = "Xác Thực Tài Khoản";
-            message = "Hi " + user.getName() + ",\n" +
-                    "Hãy sử dụng mã bên dưới để xác nhận tài khoản của bạn:\n\n" +
-                    code + "\n\n" +
-                    "Cảm ơn bạn đã tham gia cùng chúng tôi!";
-        } else if ("ForgotPassword".equals(feature)) {
-            subject = "Đặt Lại Mật Khẩu";
-            message = "Hi " + user.getName() + ",\n" +
-                    "Hãy sử dụng mã bên dưới để đặt lại mật khẩu của bạn:\n\n" +
-                    code + "\n\n" +
-                    "Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.";
-        }
-
-        if (!SendMail.sendEmail(user.getEmail(), subject, message)) {
-            Toast.makeText(VerificationAccountActivity.this, "Gửi email xác thực không thành công. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+        if (clickTvSendEmail) {
+            callAPISendEmail();
         } else {
-            Toast.makeText(VerificationAccountActivity.this, "Email xác thực đã được gửi!", Toast.LENGTH_SHORT).show();
-            tvSendEmail.setEnabled(false);
-            tvSendEmail.setTextColor(ContextCompat.getColor(VerificationAccountActivity.this, R.color.dark_gray));
-            startCountdown();
+            String time = tvTime.getText().toString();
+
+            String message = "Vui lòng đợi " + time + " giây trước khi gửi lại mã OTP.";
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void callAPISendEmail() {
+        Log.e("EMAIL-FEATURE","Email: " + email + ", Feature: " + feature);
+        UserApi userApi = ApiClient.getRetrofitInstance().create(UserApi.class);
+
+        Call<ApiResponse> call = userApi.sendEmailVerifyAccount(email, feature);
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                Log.d("VerifyAccountActivity", "API phản hồi với mã: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(VerificationAccountActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                    clickTvSendEmail = false;
+                    tvSendEmail.setTextColor(ContextCompat.getColor(VerificationAccountActivity.this, R.color.dark_gray));
+                    startCountdown();
+                } else {
+                    try {
+                        ApiResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
+                        if (errorResponse != null && errorResponse.getMessage() != null) {
+                            Toast.makeText(VerificationAccountActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(VerificationAccountActivity.this, "Gửi email xác thực tài khoản thất bại:", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(VerificationAccountActivity.this, "Gửi email xác thực tài khoản thất bại:", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("VerificationAccountActivity", "Gửi email xác thực tài khoản thất bại: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("VerificationAccountActivity", "Lỗi khi gọi API: " + t.getMessage());
+                Toast.makeText(VerificationAccountActivity.this, "Lỗi kết nối, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void btnBack() {
@@ -158,9 +183,12 @@ public class VerificationAccountActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RegisterActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+        } else if ("ChangePassword".equals(feature)) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("action", "backToMeFragment"); // Thông báo xóa ChangePasswordFragment
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
         }
-
-        finish();
     }
 
     private void startCountdown() {
@@ -173,7 +201,7 @@ public class VerificationAccountActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 tvTime.setText("0");
-                tvSendEmail.setEnabled(true);
+                clickTvSendEmail = true;
                 tvSendEmail.setText("Gửi lại");
                 tvSendEmail.setTextColor(ContextCompat.getColor(VerificationAccountActivity.this, R.color.red));
             }
@@ -192,48 +220,72 @@ public class VerificationAccountActivity extends AppCompatActivity {
 
         String code = builderStr.toString();
 
-        UserModel user = (UserModel) getIntent().getSerializableExtra("user");
-        if (user != null && user.getCreateCode() != null &&
-                ((System.currentTimeMillis() - user.getCreateCode().getTime()) / 1000 <= otpDuration)) {
-            try {
-                // Giải mã chuỗi mã hóa từ user.getCode()
-                String decryptedCode = JsonEncryptor.decrypt(user.getCode());
+        callAPIVerifyAccount(code);
 
-                // Lấy giá trị của khóa "otp" từ chuỗi JSON đã giải mã
-                String codeFromUser = new JSONObject(decryptedCode).getString("otp");
-
-                if (code.equals(codeFromUser)) {
-                    user.setActive(true);
-                    if (userService.updateUser(user)) {
-                        if ("ForgotPassword".equals(feature)) {
-                            Toast.makeText(this, "Xác thực thành công! Đang chuyển hướng...", Toast.LENGTH_SHORT).show();
-                            binding.getRoot().postDelayed(() -> {
-                                Intent intent = new Intent(VerificationAccountActivity.this, ForgotPasswordActivity.class);
-                                intent.putExtra("user", user);
-                                startActivity(intent);
-                                finish(); // Đóng activity hiện tại để không giữ nó trong ngăn xếp.
-                            }, 2000);
-                        } else if ("Login".equals(feature) || "Register".equals(feature)) {
-                            Toast.makeText(this, "Xác thực thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
-                            binding.getRoot().postDelayed(() -> {
-                                Intent intent = new Intent(VerificationAccountActivity.this, LoginActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            }, 2000);
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, "Mã OTP không chính xác, vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Lỗi xử lý mã OTP. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Mã OTP của bạn đã hết hạn. Vui lòng nhấn 'Gửi lại' để nhận mã mới và thử lại!", Toast.LENGTH_SHORT).show();
-        }
     }
 
+    private void callAPIVerifyAccount(String code) {
+        Log.e("EMAIL-FEATURE","Email: " + email + ", Feature: " + feature);
+        UserApi userApi = ApiClient.getRetrofitInstance().create(UserApi.class);
+
+        VerifyAccountDto verifyAccountDto = new VerifyAccountDto(email, code, otpDuration);
+        Log.d("VerifyAccountDto", "Email: " + email + ", Code: " + code + ", OTP Duration: " + otpDuration);
+
+        Call<ApiResponse> call = userApi.verifyAccount(verifyAccountDto); // Sử dụng verifyAccount
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                Log.d("VerifyAccountActivity", "API phản hồi với mã: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    if ("ForgotPassword".equals(feature) || "ChangePassword".equals(feature)) {
+                        Toast.makeText(VerificationAccountActivity.this, "Xác thực thành công! Đang chuyển hướng...", Toast.LENGTH_SHORT).show();
+                        binding.getRoot().postDelayed(() -> {
+                            Intent intent = new Intent(VerificationAccountActivity.this, ForgotPasswordActivity.class);
+                            intent.putExtra("email", email);
+                            intent.putExtra("feature", feature);
+                            startActivity(intent);
+                            finish();
+                        }, 2000);
+                    } else if ("Register".equals(feature)) {
+                        Toast.makeText(VerificationAccountActivity.this, "Xác thực thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
+                        binding.getRoot().postDelayed(() -> {
+                            Intent intent = new Intent(VerificationAccountActivity.this, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }, 2000);
+                    } else if ("Login".equals(feature)){
+                        Toast.makeText(VerificationAccountActivity.this, "Xác thực thành công! Đang chuyển hướng đến trang chủ...", Toast.LENGTH_SHORT).show();
+                        binding.getRoot().postDelayed(() -> {
+                            Intent intent = new Intent(VerificationAccountActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }, 2000);
+                    }
+                } else {
+                    // Xử lý lỗi từ API (bao gồm BadRequest)
+                    try {
+                        ApiResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
+                        if (errorResponse != null && errorResponse.getMessage() != null) {
+                            Toast.makeText(VerificationAccountActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(VerificationAccountActivity.this, "Xác thực tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(VerificationAccountActivity.this, "Xác thực tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("VerificationAccountActivity", "Xác thực tài khoản thất bại: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("VerificationAccountActivity", "Lỗi khi gọi API: " + t.getMessage());
+                Toast.makeText(VerificationAccountActivity.this, "Lỗi kết nối, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onBackPressed() {

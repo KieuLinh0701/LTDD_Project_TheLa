@@ -58,4 +58,7 @@ dependencies {
     implementation(libs.androidMail)
     implementation(libs.androidActivation)
     implementation(libs.securityCrypto)
+    implementation(libs.retrofit)
+    implementation(libs.converterGson)
+    implementation(libs.volley)
 }

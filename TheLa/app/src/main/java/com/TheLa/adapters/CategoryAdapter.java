@@ -12,19 +12,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.TheLa.models.CategoryModel;
+import com.TheLa.dto.CategoryDto;
 import com.example.TheLa.R;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
-    private List<CategoryModel> categoryList;
+    private List<CategoryDto> list;
     private Context context;
     private IOnItemClickListener listener;
 
-    public CategoryAdapter(List<CategoryModel> categoryList, Context context, IOnItemClickListener listener) {
-        this.categoryList = categoryList;
+    public CategoryAdapter(List<CategoryDto> list, Context context, IOnItemClickListener listener) {
+        this.list = list;
         this.context = context;
         this.listener = listener;
     }
@@ -39,7 +39,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        CategoryModel category = categoryList.get(position);
+        CategoryDto category = list.get(position);
         holder.categoryName.setText(category.getName());
 
         //xử lý ảnh
@@ -77,11 +77,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
-        return categoryList.size();
+        return list.size();
     }
 
-    public CategoryModel getItem(int position) {
-        return categoryList.get(position);
+    public CategoryDto getItem(int position) {
+        return list.get(position);
     }
 
     static class CategoryViewHolder extends RecyclerView.ViewHolder {

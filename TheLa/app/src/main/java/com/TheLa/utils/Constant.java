@@ -1,9 +1,11 @@
 package com.TheLa.utils;
 
-public class Constant {
+import com.example.TheLa.R;
 
-    //Role của User
-    public static final String ROLE_CUSTOMER = "Customer";
-    public static final String ROLE_ADMIN = "Admin";
-    public static final String ROLE_EMPLOYEE = "Employee";
+public class Constant {
+    public static final int OTP_DURATION = 90;
+    public static final String ORDER_PROCESSING = "Processing";
+    public static final String ORDER_CANCELLED = "Cancelled";
+    public static final String ORDER_COMPLETED = "Completed";
+    public static final String ORDER_PENDING = "Pending";
 }

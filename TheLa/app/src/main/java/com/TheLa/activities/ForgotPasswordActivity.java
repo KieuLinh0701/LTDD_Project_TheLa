@@ -1,29 +1,34 @@
 package com.TheLa.activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.TheLa.models.UserModel;
-import com.TheLa.services.implement.UserService;
-import com.TheLa.utils.PasswordUtils;
+import com.TheLa.Api.ApiClient;
+import com.TheLa.Api.ApiResponse;
+import com.TheLa.Api.UserApi;
+import com.TheLa.dto.ResetPasswordDto;
+import com.TheLa.fragments.MeFragment;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityForgotpasswordBinding;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     ActivityForgotpasswordBinding binding;
-    UserService userService;
+    private String feature, email;
     private boolean isPasswordVisible = false;
     private boolean isRepeatPasswordVisible = false;
 
@@ -32,12 +37,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityForgotpasswordBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
 
-        userService = new ViewModelProvider(this).get(UserService.class);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        email = getIntent().getStringExtra("email");
+        feature = getIntent().getStringExtra("feature");
 
         addEvents();
     }
@@ -107,24 +109,59 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        UserModel user = (UserModel) getIntent().getSerializableExtra("user");
-        if (user != null) {
-            try {
-                String hashedPassword = PasswordUtils.hashPassword(pass);
-                user.setPassword(hashedPassword);
-                if (userService.updateUser(user)) {
-                    Toast.makeText(this, "Khôi phục mật khẩu thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
-                    binding.getRoot().postDelayed(() -> {
-                        Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                    }, 2000);
+        ResetPasswordDto resetPasswordDto = new ResetPasswordDto(email, pass);
+        CallApiResetPassword(resetPasswordDto);
+    }
+
+    private void CallApiResetPassword(ResetPasswordDto resetPasswordDto) {
+        UserApi userApi = ApiClient.getRetrofitInstance().create(UserApi.class);
+
+        Call<ApiResponse> call = userApi.resetPassword(resetPasswordDto);
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                Log.d("LoginActivity", "API phản hồi với mã: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    if ("ForgotPassword".equals(feature)) {
+                        Toast.makeText(ForgotPasswordActivity.this, "Khôi phục mật khẩu thành công! Đang chuyển hướng đến trang đăng nhập...", Toast.LENGTH_SHORT).show();
+                        binding.getRoot().postDelayed(() -> {
+                            Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }, 2000);
+                    } else if ("ChangePassword".equals(feature)) {
+                        Toast.makeText(ForgotPasswordActivity.this, "Thay đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
+                        binding.getRoot().postDelayed(() -> {
+                            MeFragment meFragment = new MeFragment();
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.activity_forgotPassword, meFragment)
+                                    .commit();
+                        }, 2000);
+
+                    }
+                } else {
+                    try {
+                        ApiResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
+                        if (errorResponse != null && errorResponse.getMessage() != null) {
+                            Toast.makeText(ForgotPasswordActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ForgotPasswordActivity.this, "Lỗi xử lý mật khẩu. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ForgotPasswordActivity.this, "Lỗi xử lý mật khẩu. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("ForgotPasswordActivity", "Lỗi xử lý mật khẩu. Vui lòng thử lại: " + response.message());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Lỗi xử lý mật khẩu. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
             }
-        }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("ForgotPasswordActivity", "Lỗi khi gọi API: " + t.getMessage());
+                Toast.makeText(ForgotPasswordActivity.this, "Lỗi kết nối, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private boolean isValidInput(String password, String rePassword) {

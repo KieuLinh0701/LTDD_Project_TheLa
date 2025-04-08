@@ -1,42 +1,33 @@
 package com.TheLa.activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.TheLa.models.UserModel;
-import com.TheLa.services.implement.UserService;
-import com.TheLa.configs.SendMail;
-import com.TheLa.utils.JsonEncryptor;
+import com.TheLa.Api.ApiClient;
+import com.TheLa.Api.ApiResponse;
+import com.TheLa.Api.UserApi;
 import com.example.TheLa.databinding.ActivityForgotpasswordEmailBinding;
+import com.google.gson.Gson;
 
-import org.json.JSONObject;
+import java.io.IOException;
 
-import java.sql.Timestamp;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForgotPasswordEmailActivity extends AppCompatActivity {
     ActivityForgotpasswordEmailBinding binding;
-    UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityForgotpasswordEmailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
-
-        userService = new ViewModelProvider(this).get(UserService.class);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         addEvents();
     }
@@ -63,39 +54,49 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
             return;
         }
 
-        UserModel user = userService.getUserFindByEmail(email);
-        if (user != null) {
+        callAPISendEmail(email);
 
-            try {
-                String code = SendMail.getRandom();
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("otp", code);
-                String encryptedCode = JsonEncryptor.encrypt(jsonObject.toString());
-                user.setCode(encryptedCode);
-                user.setCreateCode(new Timestamp(System.currentTimeMillis()));
-                String subject = "Đặt Lại Mật Khẩu";
-                String message = "Hi " + user.getName() + ",\n" +
-                        "Hãy sử dụng mã bên dưới để đặt lại mật khẩu của bạn:\n\n" +
-                        code + "\n\n" +
-                        "Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.";
+    }
 
-                if (SendMail.sendEmail(email, subject, message)) {
-                    if (userService.updateUser(user)) {
+    private void callAPISendEmail(String email) {
+        UserApi userApi = ApiClient.getRetrofitInstance().create(UserApi.class);
+
+        Call<ApiResponse> call = userApi.sendEmailVerifyAccount(email, "ForgotPassword");
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                Log.d("VerifyAccountActivity", "API phản hồi với mã: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(ForgotPasswordEmailActivity.this, "Vui lòng kiểm tra email của bạn và nhập mã OTP để hoàn tất xác thực!", Toast.LENGTH_SHORT).show();
+                    binding.getRoot().postDelayed(() -> {
                         Intent intent = new Intent(ForgotPasswordEmailActivity.this, VerificationAccountActivity.class);
-                        intent.putExtra("user", user);
+                        intent.putExtra("email", email);
                         intent.putExtra("feature", "ForgotPassword");
                         startActivity(intent);
-                    }
+                    }, 2000);
                 } else {
-                    Toast.makeText(ForgotPasswordEmailActivity.this, "Gửi email xác thực không thành công. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                    try {
+                        ApiResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
+                        if (errorResponse != null && errorResponse.getMessage() != null) {
+                            Toast.makeText(ForgotPasswordEmailActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ForgotPasswordEmailActivity.this, "Xác thực tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ForgotPasswordEmailActivity.this, "Xác thực tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("ForgotPasswordEmailActivity", "Xác thực tài khoản thất bại: " + response.message());
                 }
-            } catch (Exception e) {
-                Toast.makeText(ForgotPasswordEmailActivity.this, "Đã xảy ra lỗi khi tạo hoặc gửi mã xác thực!", Toast.LENGTH_SHORT).show();
-                e.printStackTrace(); // In lỗi ra log để hỗ trợ debug
             }
-        } else {
-            Toast.makeText(ForgotPasswordEmailActivity.this, "Email không tồn tại!", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("ForgotPasswordEmailActivity", "Lỗi khi gọi API: " + t.getMessage());
+                Toast.makeText(ForgotPasswordEmailActivity.this, "Lỗi kết nối, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private boolean isValidInput(String email) {

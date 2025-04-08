@@ -15,15 +15,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5">
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/etSearch"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -41,7 +41,6 @@
             android:inputType="text"
             android:textAllCaps="false" />
 
-
         <!-- Cart icon -->
         <FrameLayout
             android:id="@+id/cartContainer"
@@ -56,9 +55,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_cart"
-                android:contentDescription="Cart Icon"
                 android:scaleType="centerInside"
-                android:tint="@color/white"/>
+                app:tint="@color/white" />
 
             <!-- Huy hiệu số lượng -->
             <TextView
@@ -130,7 +128,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Đồ Uống Mới"
+                                android:text="Latest"
                                 android:textStyle="bold"
                                 android:textSize="16sp"
                                 android:fontFamily="sans-serif"
@@ -139,7 +137,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Vị Mới Lạ, Thử Ngay!"
+                                android:text="New Flavor, Try Now!"
                                 android:paddingTop="2dp"
                                 android:textSize="14sp"
                                 android:fontFamily="sans-serif"
@@ -148,10 +146,10 @@
 
                         <ImageView
                             android:id="@+id/topRightImage"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginRight="4dp"
                             android:src="@drawable/ic_new"
                             android:contentDescription="New Icon" />
@@ -182,7 +180,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Bán Chạy"
+                                android:text="Best Seller"
                                 android:fontFamily="sans-serif"
                                 android:textStyle="bold"
                                 android:textSize="16sp"
@@ -192,7 +190,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingTop="2dp"
-                                android:text="Hot - Đừng Bỏ Qua!"
+                                android:text="Hot - Don't Miss Out!"
                                 android:fontFamily="sans-serif"
                                 android:textSize="14sp"
                                 android:textColor="#888888" />
@@ -203,8 +201,6 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginRight="4dp"
                             android:src="@drawable/ic_fire"
                             android:contentDescription="Fire Icon" />
                     </RelativeLayout>
@@ -224,6 +220,7 @@
 
                 <!-- CardView 1 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/promotion"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -245,7 +242,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Promotion"
+                                android:text="Promotions"
                                 android:textStyle="bold"
                                 android:textSize="16sp"
                                 android:textColor="#000000" />
@@ -253,25 +250,26 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Limited Time Only!"
+                                android:text="Limited-Time Offer!"
                                 android:textSize="14sp"
                                 android:textColor="#888888" />
                         </LinearLayout>
 
                         <ImageView
                             android:id="@+id/topRightImage3"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:paddingTop="3dp"
-                            android:paddingRight="5dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginRight="6dp"
                             android:src="@drawable/ic_promotion"
-                            android:contentDescription="Top Right Icon"
-                            android:layout_alignParentEnd="true" />
+                            android:contentDescription="New Icon" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- CardView 2 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/store"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -293,7 +291,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="All Products"
+                                android:text="Store"
                                 android:textStyle="bold"
                                 android:textSize="16sp"
                                 android:textColor="#000000" />
@@ -310,7 +308,9 @@
                             android:id="@+id/topRightImage4"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/ic_milktea"
+                            android:src="@drawable/ic_store"
+                            android:paddingRight="6dp"
+                            android:paddingTop="6dp"
                             android:contentDescription="Top Right Icon"
                             android:layout_alignParentEnd="true" />
                     </RelativeLayout>
@@ -321,48 +321,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="8dp"
-                android:background="@color/white">
-
-                <!-- TextView: DANH MỤC SẢN PHẨM -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Danh mục sản phẩm"
-                    android:paddingTop="20dp"
-                    android:paddingLeft="20dp"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp" />
-
-                <!-- RecyclerView: Category List -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categoryRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_category" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp"
                 android:background="@color/white">
 
                 <!-- TextView: SẢN PHẨM -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sản phẩm"
+                    android:text="Products"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif"
                     android:paddingLeft="20dp"
                     android:textStyle="bold"
-                    android:paddingBottom="8dp" />
+                    android:textColor="@color/black"/>
 
                 <!-- RecyclerView: Product List -->
                 <androidx.recyclerview.widget.RecyclerView

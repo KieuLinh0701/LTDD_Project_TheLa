@@ -11,18 +11,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.TheLa.models.ProductSizeModel;
+import com.TheLa.dto.ProductSizeDto;
 import com.example.TheLa.R;
 
-import java.io.InputStream;
 import java.util.List;
 
 public class ProductSizeAdapter extends RecyclerView.Adapter<ProductSizeAdapter.ProductSizeViewHolder> {
-    private List<ProductSizeModel> list;
+    private List<ProductSizeDto> list;
     private Context context;
     private int selectedPosition = -1; // Lưu vị trí đã chọn
 
-    public ProductSizeAdapter(List<ProductSizeModel> list, Context context) {
+    public ProductSizeAdapter(List<ProductSizeDto> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -38,7 +37,7 @@ public class ProductSizeAdapter extends RecyclerView.Adapter<ProductSizeAdapter.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ProductSizeAdapter.ProductSizeViewHolder holder, int position) {
-        ProductSizeModel model = list.get(position);
+        ProductSizeDto model = list.get(position);
         holder.sizeName.setText(model.getSize().getName());
         holder.price.setText("+ " + model.getPrice().toPlainString());
         holder.sizeDescription.setText(model.getSize().getDescription());
@@ -60,7 +59,7 @@ public class ProductSizeAdapter extends RecyclerView.Adapter<ProductSizeAdapter.
         return list.size();
     }
 
-    public ProductSizeModel getItem(int position) {
+    public ProductSizeDto getItem(int position) {
         return list.get(position);
     }
 

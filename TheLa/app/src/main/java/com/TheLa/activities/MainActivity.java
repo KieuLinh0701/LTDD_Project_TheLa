@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.TheLa.adapters.ViewPagerAdapter;
+import com.TheLa.fragments.widget.CustomViewPager;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityMainBinding;
 import com.google.android.material.badge.BadgeDrawable;
@@ -18,7 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
-    private ViewPager viewPager;
+    private CustomViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
     
     @Override
@@ -28,11 +29,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         viewPager = binding.viewPager;
+        viewPager.setPagingEnabled(false);
         bottomNavigationView = binding.bottomNav;
-
-        SetVisibleBadgeDrawableNotification();
-
-        SetVisibleBadgeDrawableOrder();
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         viewPager.setAdapter(adapter);
@@ -50,13 +48,13 @@ public class MainActivity extends AppCompatActivity {
                         bottomNavigationView.getMenu().findItem(R.id.menu_home).setChecked(true);
                         break;
                     case 1:
-                        bottomNavigationView.getMenu().findItem(R.id.menu_orders).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.menu_store).setChecked(true);
                         break;
                     case 2:
-                        bottomNavigationView.getMenu().findItem(R.id.menu_me).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.menu_orders).setChecked(true);
                         break;
                     case 3:
-                        bottomNavigationView.getMenu().findItem(R.id.menu_notifications).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.menu_me).setChecked(true);
                         break;
                 }
             }
@@ -72,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.menu_home) {
                     viewPager.setCurrentItem(0);
-                } else if (item.getItemId() == R.id.menu_orders) {
+                } else if (item.getItemId() == R.id.menu_store) {
                     viewPager.setCurrentItem(1);
-                } else if (item.getItemId() == R.id.menu_notifications) {
+                } else if (item.getItemId() == R.id.menu_orders) {
                     viewPager.setCurrentItem(2);
                 } else if (item.getItemId() == R.id.menu_me) {
                     viewPager.setCurrentItem(3);
@@ -84,21 +82,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void SetVisibleBadgeDrawableNotification() {
-        // Thêm BadgeDrawable cho mục Notifications
-        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.menu_notifications);
-        // Đổi màu nền của Badge
-        badgeDrawable.setBackgroundColor(ContextCompat.getColor(this, R.color.green));
-        badgeDrawable.setVisible(true); // Hiển thị badge
-        badgeDrawable.setNumber(10); // Đặt số thông báo (thay đổi số này theo nhu cầu)
-    }
-
-    private void SetVisibleBadgeDrawableOrder() {
-        // Thêm BadgeDrawable cho mục Notifications
-        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.menu_orders);
-        // Đổi màu nền của Badge
-        badgeDrawable.setBackgroundColor(ContextCompat.getColor(this, R.color.green));
-        badgeDrawable.setVisible(true); // Hiển thị badge
-        badgeDrawable.setNumber(2); // Đặt số thông báo (thay đổi số này theo nhu cầu)
-    }
 }

@@ -1,37 +1,33 @@
 package com.TheLa.activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.text.InputType;
+import android.util.Log;
 import android.util.Patterns;
 import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.TheLa.models.UserModel;
-import com.TheLa.services.implement.UserService;
-import com.TheLa.configs.SendMail;
-import com.TheLa.utils.Constant;
-import com.TheLa.utils.JsonEncryptor;
-import com.TheLa.utils.PasswordUtils;
+import com.TheLa.Api.ApiClient;
+import com.TheLa.Api.ApiResponse;
+import com.TheLa.Api.UserApi;
+import com.TheLa.dto.RegisterDto;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityRegisterBinding;
+import com.google.gson.Gson;
 
-import org.json.JSONObject;
+import java.io.IOException;
 
-import java.sql.Timestamp;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     ActivityRegisterBinding binding;
-    UserService userService;
     private boolean isPasswordVisible = false;
     private boolean isRepeatPasswordVisible = false;
 
@@ -40,12 +36,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
-
-        userService = new ViewModelProvider(this).get(UserService.class);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         addEvents();
     }
@@ -128,48 +118,50 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        String code = SendMail.getRandom();
+        RegisterDto registerDto = new RegisterDto(name, email, password);
+        callAPI(registerDto);
+    }
 
-        try {
-            String hashedPassword = PasswordUtils.hashPassword(password);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("otp", code);
-            String encryptedCode = JsonEncryptor.encrypt(jsonObject.toString());
+    private void callAPI(RegisterDto registerDto) {
+        UserApi userApi = ApiClient.getRetrofitInstance().create(UserApi.class);
 
-            UserModel user = new UserModel(
-                    name,
-                    email,
-                    hashedPassword, // Lưu mật khẩu đã mã hóa
-                    encryptedCode, // Lưu code đã mã hóa
-                    null,
-                    null,
-                    Constant.ROLE_CUSTOMER,
-                    null,
-                    new Timestamp(System.currentTimeMillis()),
-                    false
-            );
 
-            String subject  = "Xác Thực Tài Khoản";
-            String message = "Hi " + user.getName() + ",\n" +
-                    "Hãy sử dụng mã bên dưới để xác nhận tài khoản của bạn:\n\n" +
-                    code + "\n\n" +
-                    "Cảm ơn bạn đã tham gia cùng chúng tôi!";
+        Call<ApiResponse> call = userApi.register(registerDto);
 
-            if (SendMail.sendEmail(email, subject, message)) {
-                UserModel newUser = userService.addUser(user);
-                if (newUser != null) {
-                    Intent intent = new Intent(RegisterActivity.this, VerificationAccountActivity.class);
-                    intent.putExtra("user", newUser);
-                    intent.putExtra("feature", "Register");
-                    startActivity(intent);
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                Log.d("RegisterActivity", "API phản hồi với mã: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    binding.getRoot().postDelayed(() -> {
+                        Intent intent = new Intent(RegisterActivity.this, VerificationAccountActivity.class);
+                        intent.putExtra("email", registerDto.getEmail());
+                        intent.putExtra("feature", "Register");
+                        startActivity(intent);
+                    }, 2000);
+                } else {
+                    try {
+                        ApiResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
+                        if (errorResponse != null && errorResponse.getMessage() != null) {
+                            Toast.makeText(RegisterActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Đăng ký tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(RegisterActivity.this, "Đăng ký tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("RegisterActivity", "Đăng ký tài khoản thất bại!" + response.message());
                 }
-            } else {
-                Toast.makeText(RegisterActivity.this, "Đã xảy ra lỗi khi gửi email. Vui lòng kiểm tra địa chỉ email hoặc kết nối mạng của bạn và thử lại!", Toast.LENGTH_SHORT).show();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(RegisterActivity.this, "Đã xảy ra lỗi khi mã hóa dữ liệu!", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("RegisterActivity", "Lỗi khi gọi API: " + t.getMessage());
+                Toast.makeText(RegisterActivity.this, "Lỗi kết nối, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private boolean isValidInput(String name, String email, String password, String rePassword) {
@@ -186,10 +178,6 @@ public class RegisterActivity extends AppCompatActivity {
             isValid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.etEmail.setError("Email không hợp lệ!");
-            binding.etEmail.requestFocus();
-            isValid = false;
-        } else if (userService.getUserFindByEmail(email) != null) {
-            binding.etEmail.setError("Email này đã được liên kết với một tài khoản khác!");
             binding.etEmail.requestFocus();
             isValid = false;
         }

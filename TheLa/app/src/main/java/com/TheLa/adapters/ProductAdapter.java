@@ -16,19 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.TheLa.models.ProductImageModel;
-import com.TheLa.models.ProductModel;
+import com.TheLa.dto.ProductDto;
 import com.example.TheLa.R;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
-    private List<ProductModel> productModelList;
+    private List<ProductDto> productModelList;
     private Context context;
     private IOnItemClickListener listener;
 
-    public ProductAdapter(List<ProductModel> productModelList, Context context, IOnItemClickListener listener) {
+    public ProductAdapter(List<ProductDto> productModelList, Context context, IOnItemClickListener listener) {
         this.productModelList = productModelList;
         this.context = context;
         this.listener = listener;
@@ -45,7 +44,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        ProductModel productModel = productModelList.get(position);
+        ProductDto productModel = productModelList.get(position);
 
         holder.productName.setText(productModel.getName());
         holder.productDescription.setText(productModel.getDescription());
@@ -66,12 +65,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             });
         }
 
-        //Xử lý khi đã thêm vào giỏ hàng, code sau
-//        Toast.makeText(context, "Product added to cart!", Toast.LENGTH_SHORT).show();
-
         //xử lý ảnh
 
-        String productImage = getMainProductImage(productModel); // Tên tài nguyên hình ảnh (không có phần mở rộng)
+        String productImage = productModel.getProductMainImage(); // Tên tài nguyên hình ảnh (không có phần mở rộng)
 
         // Truy vấn tài nguyên trong `res/raw`
         int resourceId = context.getResources().getIdentifier(productImage, "raw", context.getPackageName());
@@ -100,13 +96,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productModelList.size();
     }
 
-    public ProductModel getItem(int position) {
+    public ProductDto getItem(int position) {
         return productModelList.get(position);
     }
 
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateData(List<ProductModel> filteredProductModels) {
+    public void updateData(List<ProductDto> filteredProductModels) {
         this.productModelList.clear();
         this.productModelList.addAll(filteredProductModels);
         notifyDataSetChanged();
@@ -124,14 +120,5 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productDescription = itemView.findViewById(R.id.productDescription);
             addCart = itemView.findViewById(R.id.addToCartButton);
         }
-    }
-
-    public String getMainProductImage(ProductModel productModel) {
-        for (ProductImageModel imageModel : productModel.getListProductImageModelList()) {
-            if (imageModel.getMain()) {
-                return imageModel.getImage();
-            }
-        }
-        return null;
     }
 }

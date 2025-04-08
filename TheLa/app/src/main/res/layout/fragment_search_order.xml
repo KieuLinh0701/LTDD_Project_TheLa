@@ -1,0 +1,102 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/edit_gray"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.TheLa.fragments.OrderFragment">
+
+    <!-- LinearLayout for search bar -->
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:weightSum="1">
+
+        <!-- ImageView for icon left of "My Order" -->
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical|start" />
+
+        <!-- TextView for "My Order" on the left -->
+        <TextView
+            android:id="@+id/myOrderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search Order"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical|start" />
+
+    </LinearLayout>
+
+    <!-- Search bar below "My Order" -->
+    <LinearLayout
+        android:id="@+id/searchBarInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:padding="16dp"
+        android:layout_marginTop="3dp"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="Search"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:backgroundTint="@null"
+            android:textColor="@color/dark_gray"
+            android:textSize="14sp"
+            android:gravity="center_vertical"
+            android:fontFamily="sans-serif"
+            android:padding="8dp"
+            android:background="@drawable/button_search_gray"
+            android:textAllCaps="false"
+            android:imeOptions="actionSearch"
+            android:maxLines="1"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/orderRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        tools:listitem="@layout/item_order"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tvThongBao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tìm kiếm đơn hàng theo tên sản phẩm đã mua"
+        android:textAlignment="center"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/black"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:gravity="center"
+        android:textSize="16sp" />
+
+</LinearLayout>

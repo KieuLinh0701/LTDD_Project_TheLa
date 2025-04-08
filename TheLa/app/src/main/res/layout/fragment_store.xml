@@ -1,0 +1,127 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/fragment_home"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green"
+    tools:context="com.TheLa.fragments.HomeFragment">
+
+    <!-- LinearLayout for search bar -->
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingTop="24dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_back"
+            android:layout_gravity="center_vertical"
+            android:padding="4dp"
+            android:clickable="true"
+            app:tint="@color/white"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_search"
+            android:backgroundTint="@null"
+            android:drawableStart="@drawable/ic_search"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:hint="Search"
+            android:inputType="text"
+            android:padding="8dp"
+            android:layout_marginStart="8dp"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_gray"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/filterIcon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_filter"
+            android:contentDescription="filter Icon"
+            android:scaleType="centerInside"
+            app:tint="@color/white"/>
+
+    </LinearLayout>
+
+    <!-- NestedScrollView for content -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingTop="16dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+    <!-- Content layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:paddingLeft="20dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoryRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_category" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product"
+                android:paddingLeft="20dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold" />
+
+            <!-- RecyclerView: Product List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/productRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                tools:listitem="@layout/item_product" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

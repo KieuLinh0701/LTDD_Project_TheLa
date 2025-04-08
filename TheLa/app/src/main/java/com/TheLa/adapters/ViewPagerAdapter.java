@@ -6,9 +6,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.TheLa.fragments.MeFragment;
-import com.TheLa.fragments.NotificationFragment;
 import com.TheLa.fragments.OrderFragment;
 import com.TheLa.fragments.HomeFragment;
+import com.TheLa.fragments.StoreFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behaviorResumeOnlyCurrentFragment) {
@@ -24,12 +24,10 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0:
-                return new HomeFragment();
             case 1:
-                return new OrderFragment();
+                return new StoreFragment();
             case 2:
-                return new NotificationFragment();
+                return new OrderFragment();
             case 3:
                 return new MeFragment();
             default:

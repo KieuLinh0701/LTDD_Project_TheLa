@@ -1,7 +1,5 @@
 package com.TheLa.adapters;
 
-import static java.security.AccessController.getContext;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,12 +16,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.TheLa.models.ReviewImageModel;
-import com.TheLa.models.ReviewModel;
-import com.TheLa.services.implement.ReviewImageService;
+import com.TheLa.dto.ReviewDto;
+import com.TheLa.dto.ReviewImageDto;
 import com.example.TheLa.R;
 
 import java.io.InputStream;
@@ -32,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
-    private List<ReviewModel> list;
+    private List<ReviewDto> list;
     private Context context;
 
-    public ReviewAdapter(List<ReviewModel> list, Context context) {
+    public ReviewAdapter(List<ReviewDto> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -51,7 +47,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ReviewAdapter.ReviewViewHolder holder, int position) {
-        ReviewModel model = list.get(position);
+        ReviewDto model = list.get(position);
 
         holder.tvName.setText(model.getUser().getName());
         holder.tvContent.setText(model.getContent());
@@ -67,7 +63,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.imgAvatar.setImageDrawable(drawable);
 
         // Gắn danh sách ảnh đánh giá
-        List<String> imageNames = setUpReviewImage(model.getReviewId());
+        List<String> imageNames = setUpReviewImage(model);
 
         if (imageNames != null && !imageNames.isEmpty()) {
             // Thiết lập LayoutManager và Adapter cho RecyclerView nếu danh sách ảnh không rỗng
@@ -87,12 +83,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
     }
 
-    private List<String> setUpReviewImage(Long reviewId) {
-        ReviewImageService service = new ReviewImageService();
-        List<ReviewImageModel> list = service.findReviewImageByReviewId(reviewId);
+    private List<String> setUpReviewImage(ReviewDto dto) {
+        List<ReviewImageDto> list = dto.getReviewImages();
 
         List<String> imageNames = new ArrayList<>();
-        for (ReviewImageModel x : list) {
+        for (ReviewImageDto x : list) {
             imageNames.add(x.getImage());
         }
 
@@ -159,7 +154,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return list.size();
     }
 
-    public ReviewModel getItem(int position) {
+    public ReviewDto getItem(int position) {
         return list.get(position);
     }
 

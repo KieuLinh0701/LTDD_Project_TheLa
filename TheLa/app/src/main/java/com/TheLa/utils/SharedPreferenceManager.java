@@ -3,69 +3,44 @@ package com.TheLa.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class SharedPreferenceManager {
-    public static final String THE_LA_REFERENCE_NAME = "TheLa";
-    public static final String USER_NAME = "name";
-    public static final String USER_EMAIL = "email";
-    public static final String USER_PASSWORD = "email";
-    public static final String USER_ROLE = "role";
-    public static final String AUTH_TOKEN = "authToken";
-    public static final String CART_ITEMS = "cart_items";
+import com.TheLa.dto.UserDto;
+import com.google.gson.Gson;
 
-    private Context context;
+public class SharedPreferenceManager {
+
+    private static final String PREF_NAME = "TheLaAppPrefs";
+    private static final String KEY_USER = "USER";
+    private SharedPreferences sharedPreferences;
+    private Gson gson;
 
     public SharedPreferenceManager(Context context) {
-        this.context = context;
+        sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        gson = new Gson();
     }
 
-    public void saveLoginInfo (String deliveryName, String authToken) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
+    // Lưu UserDto dưới dạng JSON
+    public void saveUser(UserDto user) {
+        String userJson = gson.toJson(user);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(USER_NAME, deliveryName);
-        editor.putString(AUTH_TOKEN, authToken);
+        editor.putString(KEY_USER, userJson);
         editor.apply();
     }
 
+    // Lấy UserDto từ SharedPreferences
+    public UserDto getUser() {
+        String userJson = sharedPreferences.getString(KEY_USER, null);
+        return userJson != null ? gson.fromJson(userJson, UserDto.class) : null;
+    }
 
-    public void clear() {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
+    // Xóa thông tin người dùng (khi logout)
+    public void clearUser() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
+        editor.remove(KEY_USER);
         editor.apply();
     }
 
-
-    public String getStringValue(String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(key, null);
-    }
-
-    public void setStringValue(String key, String value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    public void setLongValue(String key, Long value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(key, value);
-        editor.apply();
-    }
-
-    public float getFloatValue(String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getFloat(key, 0f);
-    }
-
-    public boolean getBooleanValue(String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(key, false);
-    }
-
-    public Long getLongValue(String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(THE_LA_REFERENCE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getLong(key, 0L);
+    // Kiểm tra đã đăng nhập chưa
+    public boolean isLoggedIn() {
+        return getUser() != null;
     }
 }

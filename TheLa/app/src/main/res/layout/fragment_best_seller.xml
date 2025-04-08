@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:gravity="center_vertical"
-            android:text="Top 10 Sản Phẩm Bán Chạy"
+            android:text="Top 10 Best-Selling Products"
             android:textSize="16sp"
             android:paddingLeft="20dp"
             android:fontFamily="sans-serif"

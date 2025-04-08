@@ -1,38 +1,44 @@
 package com.TheLa.fragments.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.TheLa.Api.ApiClient;
+import com.TheLa.Api.ProductApi;
 import com.TheLa.adapters.ProductAdapter;
-import com.TheLa.models.ProductModel;
-import com.TheLa.services.implement.ProductService;
+import com.TheLa.dto.ProductDto;
+import com.TheLa.fragments.ProductDetailFragment;
 import com.example.TheLa.R;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BestSellerFragment extends Fragment {
     private RecyclerView productRecyclerView;
     private ProductAdapter productAdapter;
-    private ProductService productService;
-
-    public BestSellerFragment() {
-        // Required empty public constructor
-        productService = new ProductService();
-    }
+    private List<ProductDto> list = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_best_seller, container, false);
 
+        getBestSellerProducts();
         initializeViews(view);
         initializeRecyclerView(view);
         setupButtonBack(view);
@@ -49,29 +55,47 @@ public class BestSellerFragment extends Fragment {
     private void initializeRecyclerView(View view) {
         productRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        List<ProductModel> productModelList = getBestSellerProducts();
-
-        productAdapter = new ProductAdapter(productModelList, getContext(), this::onProductClicked);
+        productAdapter = new ProductAdapter(list, getContext(), this::onProductClicked);
         productRecyclerView.setAdapter(productAdapter);
     }
 
     //Lấy danh sách các sản phẩm bán chạy nhất.
-    private List<ProductModel> getBestSellerProducts() {
-        return productService.getTop10BestSellingActiveAndNotDeletedProducts();
+    private void getBestSellerProducts() {
+        ProductApi productApi = ApiClient.getRetrofitInstance().create(ProductApi.class);
+        Call<List<ProductDto>> call = productApi.getTop10BestSellingActiveAndNotDeletedProducts();
+
+        call.enqueue(new Callback<List<ProductDto>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<List<ProductDto>> call, Response<List<ProductDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    list.clear();
+                    list.addAll(response.body());
+                    productAdapter.notifyDataSetChanged();
+                } else {
+                    Log.e("HomeFragment", "Lỗi");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductDto>> call, Throwable t) {
+                Log.e("HomeFragment", "Lỗi khi gọi API: " + t.getMessage());
+            }
+        });
     }
 
     // Xử lý sự kiện khi một sản phẩm được nhấn.
     private void onProductClicked(int position) {
-        ProductModel clickedProduct = productAdapter.getItem(position);
+        ProductDto clickedProduct = productAdapter.getItem(position);
         navigateToProductDetailFragment(clickedProduct);
     }
 
     //Điều hướng đến `ProductDetailFragment`.
-    private void navigateToProductDetailFragment(ProductModel clickedProduct) {
+    private void navigateToProductDetailFragment(ProductDto clickedProduct) {
         ProductDetailFragment productDetailFragment = new ProductDetailFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("product", clickedProduct); // Truyền dữ liệu qua Bundle
+        bundle.putSerializable("product", (Serializable) clickedProduct); // Truyền dữ liệu qua Bundle
         productDetailFragment.setArguments(bundle);
 
         // Thay thế Fragment hiện tại bằng Fragment mới với hiệu ứng

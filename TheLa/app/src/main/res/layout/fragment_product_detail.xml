@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,6 +26,42 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:elevation="8dp" />
+
+        <!-- Cart icon -->
+        <FrameLayout
+            android:id="@+id/cartContainer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="16dp"
+            android:layout_gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:elevation="8dp">
+
+            <!-- Biểu tượng giỏ hàng -->
+            <ImageView
+                android:id="@+id/cartIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_cart"
+                android:scaleType="centerInside"
+                app:tint="@color/green" />
+
+            <!-- Huy hiệu số lượng -->
+            <TextView
+                android:id="@+id/cartBadge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="end|top"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/badge_background_green"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:fontFamily="sans-serif"/>
+        </FrameLayout>
 
         <!-- Nội dung có thể cuộn -->
         <androidx.core.widget.NestedScrollView
@@ -93,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Mô tả"
+                android:text="Description"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textSize="16sp"
@@ -124,7 +159,7 @@
                     android:id="@+id/tv_title_review"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Mọi người nhận xét"
+                    android:text="Everyone's Feedback"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
@@ -233,7 +268,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Chọn size"
+                android:text="Choose Size"
                 android:textSize="16sp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -263,7 +298,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Thêm lưu ý cho quán"
+                android:text="Add Notes for the Store"
                 android:textSize="16sp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -292,12 +327,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp">
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/ic_minus"
                     android:backgroundTint="@color/edit_gray" />
 
@@ -310,8 +345,8 @@
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/ic_plus_circle" />
             </LinearLayout>
         </LinearLayout>
@@ -322,12 +357,13 @@
         android:id="@+id/btnAddCart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Thêm vào giỏ hàng"
+        android:text="Add cart"
         android:background="@drawable/button_background"
         android:textColor="@color/white"
         android:padding="12dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
