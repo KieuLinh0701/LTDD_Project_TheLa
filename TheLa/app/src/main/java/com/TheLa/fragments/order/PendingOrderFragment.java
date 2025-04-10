@@ -44,6 +44,10 @@ public class PendingOrderFragment extends Fragment {
         listOrder = new ArrayList<>();
 
         getUser();
+        if (user == null) {
+            return view;
+        }
+
         initializeViews(view);
         setRecyclerView();
         getOrders();

@@ -20,6 +20,7 @@ import com.TheLa.Api.ApiResponse;
 import com.TheLa.Api.UserApi;
 import com.TheLa.activities.VerificationAccountActivity;
 import com.TheLa.dto.UserDto;
+import com.TheLa.utils.AppUtils;
 import com.TheLa.utils.SharedPreferenceManager;
 import com.example.TheLa.R;
 import com.google.gson.Gson;
@@ -61,6 +62,8 @@ public class ChangePasswordFragment extends Fragment {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 // Xóa ChangePasswordFragment khỏi stack
                 fragmentManager.popBackStack("ChangePasswordFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
             }
         }
     }
@@ -91,6 +94,7 @@ public class ChangePasswordFragment extends Fragment {
         btnBack.setOnClickListener(v -> {
             if (isAdded()) {
                 requireActivity().getSupportFragmentManager().popBackStack();
+                AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
             }
         });
     }
@@ -141,6 +145,8 @@ public class ChangePasswordFragment extends Fragment {
                         Toast.makeText(getContext(), "Gửi email xác thực tài khoản thất bại!", Toast.LENGTH_SHORT).show();
                     }
                     Log.d("MeFragment", "Gửi email xác thực tài khoản thất bại: " + response.message());
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                    AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
                 }
             }
 
@@ -149,7 +155,8 @@ public class ChangePasswordFragment extends Fragment {
                 if (!isFragmentActive) return;
 
                 Log.e("MeFragment", "Lỗi khi gọi API: " + t.getMessage());
-                Toast.makeText(getContext(), "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
+                requireActivity().getSupportFragmentManager().popBackStack();
+                AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
             }
         });
     }

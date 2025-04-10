@@ -1,15 +1,14 @@
 package com.TheLa.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +16,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.TheLa.activities.LoginActivity;
+import com.TheLa.activities.MainActivity;
 import com.TheLa.activities.RegisterActivity;
 import com.TheLa.dto.UserDto;
 import com.TheLa.fragments.me.AddressFragment;
 import com.TheLa.fragments.me.ChangeEmailFragment;
+import com.TheLa.fragments.me.ChangeNameFragment;
 import com.TheLa.fragments.me.ChangePasswordFragment;
 import com.TheLa.fragments.me.PaymentHistoryFragment;
 import com.TheLa.fragments.me.PaymentMethodFragment;
@@ -99,6 +101,7 @@ public class MeFragment extends Fragment {
             editButton.setVisibility(View.VISIBLE);
             tvUserName.setVisibility(View.VISIBLE);
             logout.setVisibility(View.VISIBLE);
+            tvEmail.setVisibility(View.VISIBLE);
         } else {
             // Hiển thị linearlayout chứa button Login, SignUp
             authButtons.setVisibility(View.VISIBLE);
@@ -107,22 +110,33 @@ public class MeFragment extends Fragment {
             editButton.setVisibility(View.GONE);
             tvUserName.setVisibility(View.GONE);
             logout.setVisibility(View.GONE);
+            tvEmail.setVisibility(View.GONE);
         }
     }
 
     private void cartClick() {
-        AppUtils.setBottomNavigationVisibility(this, false);
-        AppUtils.checkLogin(R.id.fragment_me, getContext(), this, new CartFragment());
+
+        if (handleLoginCheck()) {
+            AppUtils.switchToFragment(this, new CartFragment(), R.id.fragment_me);
+        }
+
+        visibleBottomNavigation();
     }
 
     private void paymentHistoryClick() {
-        AppUtils.setBottomNavigationVisibility(this, false);
-        AppUtils.checkLogin(R.id.fragment_me, getContext(), this, new PaymentHistoryFragment());
+        if (handleLoginCheck()) {
+            AppUtils.switchToFragment(this, new PaymentHistoryFragment(), R.id.fragment_me);
+        }
+
+        visibleBottomNavigation();
     }
 
     private void paymentMethodClick() {
-        AppUtils.setBottomNavigationVisibility(this, false);
-        AppUtils.checkLogin(R.id.fragment_me, getContext(), this, new PaymentMethodFragment());
+        if (handleLoginCheck()) {
+            AppUtils.switchToFragment(this, new PaymentMethodFragment(), R.id.fragment_me);
+        }
+
+        visibleBottomNavigation();
     }
 
     private void btnLoginClick() {
@@ -136,18 +150,19 @@ public class MeFragment extends Fragment {
     }
 
     private void passwordClick() {
-        if (preferenceManager.isLoggedIn()) {
-            AppUtils.setBottomNavigationVisibility(this, false);
-
+        if (handleLoginCheck()) {
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_me, new ChangePasswordFragment())
                     .addToBackStack("ChangePasswordFragment")
                     .commit();
-        } else {
-            AppUtils.switchToLoginActivity(getContext());
         }
+
+        visibleBottomNavigation();
     }
+
+
+    //Dặc biệt sửa
 
     private void emailClick() {
         if (preferenceManager.isLoggedIn()) {
@@ -164,13 +179,20 @@ public class MeFragment extends Fragment {
     }
 
     private void myAddressClick() {
-        AppUtils.setBottomNavigationVisibility(this, false);
-        AppUtils.checkLogin(R.id.fragment_me, getContext(), this, new AddressFragment());
+        if (handleLoginCheck()) {
+            AppUtils.switchToFragment(this, new AddressFragment(), R.id.fragment_me);
+        }
+
+        visibleBottomNavigation();
     }
 
     private void profileClick() {
-        AppUtils.setBottomNavigationVisibility(this, false);
-        AppUtils.checkLogin(R.id.fragment_me, getContext(), this, new ProfileFragment());
+        if (handleLoginCheck()) {
+            AppUtils.switchToFragment(this, new ProfileFragment(), R.id.fragment_me);
+        }
+
+        visibleBottomNavigation();
+
     }
 
     private void logoutClick() {
@@ -198,23 +220,7 @@ public class MeFragment extends Fragment {
     }
 
     private void setEmail() {
-        String email = user.getEmail();
-
-        // Find the index of '@' in the email
-        int atIndex = email.indexOf('@');
-
-        // If '@' is found and the email is valid
-        if (atIndex > 1) {
-            // Keep the first character and the last character before '@'
-            String hint = email.charAt(0) +
-                    email.substring(1, atIndex - 1).replaceAll(".", "*") +
-                    email.charAt(atIndex - 1) +
-                    email.substring(atIndex);
-            tvEmail.setText(hint);
-        } else {
-            // Fallback for invalid email
-            tvEmail.setText(email);
-        }
+        tvEmail.setText(AppUtils.setEmail(user.getEmail()));
     }
 
     @Override
@@ -224,4 +230,30 @@ public class MeFragment extends Fragment {
         initializeData();
     }
 
+    private boolean handleLoginCheck() {
+        SharedPreferenceManager preferenceManager = new SharedPreferenceManager(getContext());
+        if (!preferenceManager.isLoggedIn()) {
+            Toast.makeText(getContext(), "Đăng nhập ngay để tiếp tục trải nghiệm thú vị nào!", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                intent.putExtra("previousPage", "me"); // Ghi lại trang trước đó
+                startActivity(intent);
+            }, 2000); // Trì hoãn 2000ms
+            AppUtils.setBottomNavigationVisibility(this, false);
+            return false;
+        }
+        return true;
+    }
+
+    private void visibleBottomNavigation() {
+        // Ẩn BottomNavigationView
+        ((MainActivity) getActivity()).setBottomNavigationVisibility(false);
+
+        // Lắng nghe sự kiện quay lại để hiển thị lại BottomNavigationView
+        getParentFragmentManager().addOnBackStackChangedListener(() -> {
+            if (getParentFragmentManager().getBackStackEntryCount() == 0) {
+                ((MainActivity) requireActivity()).setBottomNavigationVisibility(true);
+            }
+        });
+    }
 }

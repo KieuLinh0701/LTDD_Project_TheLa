@@ -16,6 +16,7 @@ import com.TheLa.Api.ApiResponse;
 import com.TheLa.Api.UserApi;
 import com.TheLa.dto.ResetPasswordDto;
 import com.TheLa.fragments.MeFragment;
+import com.TheLa.utils.AppUtils;
 import com.example.TheLa.R;
 import com.example.TheLa.databinding.ActivityForgotpasswordBinding;
 import com.google.gson.Gson;
@@ -41,6 +42,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         feature = getIntent().getStringExtra("feature");
 
+
+
         addEvents();
     }
 
@@ -59,10 +62,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void btnBackClick() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        if ("ForgotPassword".equals(feature)) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void btnVisibleRepeatPasswordClick() {
@@ -138,7 +143,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                     .replace(R.id.activity_forgotPassword, meFragment)
                                     .commit();
                         }, 2000);
-
+                        AppUtils.setBottomNavigationVisibility(ForgotPasswordActivity.this, true);
                     }
                 } else {
                     try {

@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.TheLa.Api.ApiClient;
 import com.TheLa.Api.CategoryApi;
 import com.TheLa.Api.ProductApi;
+import com.TheLa.activities.MainActivity;
 import com.TheLa.adapters.CategoryAdapter;
 import com.TheLa.adapters.ProductAdapter;
 import com.TheLa.dto.CategoryDto;
@@ -49,9 +51,6 @@ public class StoreFragment extends Fragment {
         setupRecyclerViews(view);
 
         GetAllProducts();
-
-        // Xử lý sự kiện nút quay lại
-        setupBackButton(view);
 
         return view;
     }
@@ -96,12 +95,6 @@ public class StoreFragment extends Fragment {
         if (arguments != null) {
             categoryId = arguments.getLong("categoryId");
         }
-    }
-
-    private void setupBackButton(View view) {
-        view.findViewById(R.id.btnBack).setOnClickListener(
-                v -> requireActivity().getSupportFragmentManager().popBackStack()
-        );
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -203,8 +196,18 @@ public class StoreFragment extends Fragment {
                         android.R.anim.fade_out,
                         R.anim.slide_out_bottom
                 )
-                .replace(R.id.fragment_home, productDetailFragment)
+                .replace(R.id.fragment_store, productDetailFragment)
                 .addToBackStack(null)
                 .commit();
+
+        // Ẩn BottomNavigationView
+        ((MainActivity) getActivity()).setBottomNavigationVisibility(false);
+
+        // Lắng nghe sự kiện quay lại để hiển thị lại BottomNavigationView
+        getParentFragmentManager().addOnBackStackChangedListener(() -> {
+            if (getParentFragmentManager().getBackStackEntryCount() == 0) {
+                ((MainActivity) requireActivity()).setBottomNavigationVisibility(true);
+            }
+        });
     }
 }

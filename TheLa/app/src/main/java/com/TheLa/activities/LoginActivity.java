@@ -1,15 +1,11 @@
 package com.TheLa.activities;
 
-
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.StrictMode;
 import android.text.InputType;
 import android.util.Log;
 import android.util.Patterns;
@@ -17,7 +13,6 @@ import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.TheLa.Api.ApiClient;
@@ -122,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferenceManager preferenceManager = new SharedPreferenceManager(LoginActivity.this);
                         preferenceManager.saveUser(userDto);
 
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công! Đang chuyển hướng đến trang chủ ...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công! Đang chuyển hướng đến...", Toast.LENGTH_SHORT).show();
                         switchToHomeActivity();
                     }
                 } else if (response.code() == 401) {
@@ -191,11 +186,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void switchToHomeActivity() {
+        String previousPage = getIntent().getStringExtra("previousPage");
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            if (previousPage != null) {
+                intent.putExtra("navigateTo", previousPage); // Gửi thông tin về trang cần chuyển đến
+            }
             startActivity(intent);
         }, 0);
     }
+
 
 }

@@ -31,6 +31,16 @@ public class OrderDto implements Serializable {
     private UserDto user;
     @SerializedName("orderDetails")
     private List<OrderDetailDto> orderDetails;
+    @SerializedName("address")
+    private AddressDto address;
+
+    public AddressDto getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressDto address) {
+        this.address = address;
+    }
 
     public Timestamp getCreateDate() {
         return createDate;

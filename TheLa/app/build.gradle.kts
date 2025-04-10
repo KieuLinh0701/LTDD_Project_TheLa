@@ -61,4 +61,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converterGson)
     implementation(libs.volley)
+    implementation(libs.circleindicator)
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 }

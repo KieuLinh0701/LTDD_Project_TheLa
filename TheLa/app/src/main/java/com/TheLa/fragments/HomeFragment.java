@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,32 +18,66 @@ import android.view.ViewGroup;
 
 import com.TheLa.Api.ApiClient;
 import com.TheLa.Api.ProductApi;
+import com.TheLa.activities.MainActivity;
+import com.TheLa.adapters.ImagesViewPager2Adapter;
 import com.TheLa.adapters.ProductAdapter;
 import com.TheLa.dto.ProductDto;
 import com.TheLa.fragments.home.BestSellerFragment;
 import com.TheLa.fragments.home.LatestProductFragment;
 import com.TheLa.fragments.home.PromotionFragment;
+import com.TheLa.models.Images;
+import com.TheLa.utils.DepthPageTransformer;
 import com.example.TheLa.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator3;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
+    private ViewPager2 viewPager2;
+    private CircleIndicator3 circleIndicator3;
     private RecyclerView productRecyclerView;
     private ProductAdapter productAdapter;
-
     private List<ProductDto> listProduct = new ArrayList<>();
+
+    private List<Images> imagesList;
+
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if(viewPager2.getCurrentItem() == imagesList.size() - 1) {
+                viewPager2.setCurrentItem(0);
+            } else {
+                viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1);
+            }
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Hiển thị lại BottomNavigationView khi quay lại Fragment chính
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setBottomNavigationVisibility(true);
+        }
+        Log.d("HomeFragment", "onResume called");
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        initialViews(view);
+
+        setImage();
         GetProduct();
         setupProductRecyclerView(view);
 
@@ -49,20 +85,58 @@ public class HomeFragment extends Fragment {
         setupCardView(view, R.id.latest, new LatestProductFragment());
         setupCardView(view, R.id.bestSeller, new BestSellerFragment());
         setupCardView(view, R.id.promotion, new PromotionFragment());
-        setupCardView(view, R.id.store, new StoreFragment());
+        setupCardViewStore(view, R.id.store, R.id.menu_store);
 
         return view;
     }
+
+    private void initialViews(View view) {
+        viewPager2 = view.findViewById(R.id.viewPager);
+        circleIndicator3 = view.findViewById(R.id.circleIndicator);
+    }
+
+    private List<Images> getImage() {
+        // Danh sách hình ảnh
+        List<Images> list = new ArrayList<>();
+        list.add(new Images(R.drawable.post1));
+        list.add(new Images(R.drawable.post2));
+        list.add(new Images(R.drawable.post3));
+        return list;
+    }
+
+    private void setImage() {
+        imagesList = getImage();
+        ImagesViewPager2Adapter adapter = new ImagesViewPager2Adapter(imagesList);
+        viewPager2.setAdapter(adapter);
+        circleIndicator3.setViewPager(viewPager2);
+
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable, 3000); // 3000 milliseconds = 3 seconds
+            }
+        });
+
+        viewPager2.setPageTransformer(new DepthPageTransformer());
+    }
+
+    private void setupCardViewStore(View view, int cardViewId, int menuItemId) {
+        CardView cardView = view.findViewById(cardViewId);
+
+        cardView.setOnClickListener(v -> {
+            // Chọn tab trong BottomNavigationView
+            ((MainActivity) requireActivity()).getBottomNavigationView().setSelectedItemId(menuItemId);
+        });
+    }
+
 
     private void setupCardView(View view, int cardViewId, Fragment targetFragment) {
         CardView cardView = view.findViewById(cardViewId);
 
         cardView.setOnClickListener(v -> {
-            // Ẩn BottomNavigationView
-            View bottomNavigationView = getActivity().findViewById(R.id.bottomNav);
-            if (bottomNavigationView != null) {
-                bottomNavigationView.setVisibility(View.GONE);
-            }
+            ((MainActivity) requireActivity()).setBottomNavigationVisibility(false);
 
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_home, targetFragment);
@@ -71,9 +145,7 @@ public class HomeFragment extends Fragment {
             // Lắng nghe sự kiện quay lại để hiển thị lại BottomNavigationView
             getParentFragmentManager().addOnBackStackChangedListener(() -> {
                 if (getParentFragmentManager().getBackStackEntryCount() == 0) {
-                    if (bottomNavigationView != null) {
-                        bottomNavigationView.setVisibility(View.VISIBLE);
-                    }
+                    ((MainActivity) requireActivity()).setBottomNavigationVisibility(true);
                 }
             });
 
@@ -137,22 +209,16 @@ public class HomeFragment extends Fragment {
                     .commit();
 
             // Ẩn BottomNavigationView
-            setBottomNavigationVisibility(false);
+            ((MainActivity) requireActivity()).setBottomNavigationVisibility(false);
 
             // Lắng nghe sự kiện quay lại để hiển thị lại BottomNavigationView
             getParentFragmentManager().addOnBackStackChangedListener(() -> {
                 if (getParentFragmentManager().getBackStackEntryCount() == 0) {
-                    setBottomNavigationVisibility(true);
+                    ((MainActivity) requireActivity()).setBottomNavigationVisibility(true);
                 }
             });
         });
 
         productRecyclerView.setAdapter(productAdapter);
-    }
-    private void setBottomNavigationVisibility(boolean isVisible) {
-        View bottomNavigationView = getActivity().findViewById(R.id.bottomNav);
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        }
     }
 }

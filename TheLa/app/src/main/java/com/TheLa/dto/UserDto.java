@@ -3,6 +3,7 @@ package com.TheLa.dto;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDto implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -12,23 +13,31 @@ public class UserDto implements Serializable {
     private String name;
     @SerializedName("email")
     private String email;
-    @SerializedName("address")
-    private String address;
-    @SerializedName("phone")
-    private String phone;
     @SerializedName("role")
     private String role;
     @SerializedName("image")
     private String image;
     @SerializedName("isActive")
     private Boolean isActive;
+    @SerializedName("cart")
+    private CartDto cart;
+    @SerializedName("addresses")
+    private List<AddressDto> addresses;
 
-    public String getAddress() {
-        return address;
+    public List<AddressDto> getAddresses() {
+        return addresses;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddresses(List<AddressDto> addresses) {
+        this.addresses = addresses;
+    }
+
+    public CartDto getCart() {
+        return cart;
+    }
+
+    public void setCart(CartDto cart) {
+        this.cart = cart;
     }
 
     public String getEmail() {
@@ -53,14 +62,6 @@ public class UserDto implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getRole() {

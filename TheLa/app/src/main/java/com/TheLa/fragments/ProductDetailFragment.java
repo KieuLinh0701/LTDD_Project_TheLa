@@ -22,6 +22,7 @@ import com.TheLa.Api.ApiClient;
 import com.TheLa.Api.ProductImageApi;
 import com.TheLa.Api.ProductSizeApi;
 import com.TheLa.Api.ReviewApi;
+import com.TheLa.activities.MainActivity;
 import com.TheLa.adapters.ImageAdapter;
 import com.TheLa.adapters.ProductSizeAdapter;
 import com.TheLa.dto.ProductDto;
@@ -52,6 +53,12 @@ public class ProductDetailFragment extends Fragment {
     ReviewDto latestReview;
     List<ProductSizeDto> listProductSize = new ArrayList<>();
     List<ProductImageDto> images = new ArrayList<>();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).setBottomNavigationVisibility(false); // Ẩn
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

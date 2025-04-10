@@ -16,6 +16,8 @@ securityCrypto = "5.8.1"
 retrofit = "2.9.0"
 converterGson = "2.9.0"
 volley = "1.2.1"
+circleindicator = "2.1.6"
+glide = "4.15.1"
 
 
 [libraries]
@@ -35,6 +37,9 @@ securityCrypto = { module = "org.springframework.security:spring-security-crypto
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converterGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+circleindicator = { group = "me.relex", name = "circleindicator", version.ref = "circleindicator" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
