@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/edit_gray"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.TheLa.fragments.me.ChangeNewAddressFragment">
+    tools:context="com.TheLa.fragments.me.ChangeAddressFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -57,63 +57,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Full Name"
-                app:boxStrokeColor="@color/black"
-                app:boxStrokeWidthFocused="2dp"
-                app:boxBackgroundMode="none"
-                app:hintTextAppearance="@style/HintTextAppearance">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFullName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Quỳnh Nga"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"
-                    android:fontFamily="sans-serif"
-                    android:paddingTop="4dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginBottom="12dp"
-                android:background="@color/edit_gray"/>
-
-            <!-- Phone Number -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Phone Number"
-                app:boxStrokeColor="@color/black"
-                app:boxStrokeWidthFocused="2dp"
-                app:boxBackgroundMode="none"
-                app:hintTextAppearance="@style/HintTextAppearance">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="0123456789"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"
-                    android:fontFamily="sans-serif"
-                    android:paddingTop="4dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginBottom="12dp"
-                android:background="@color/edit_gray"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="Province / City"
                 app:boxStrokeColor="@color/black"
                 app:boxStrokeWidthFocused="2dp"
@@ -124,11 +67,11 @@
                     android:id="@+id/etCity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Bà Rịa Vũng Tàu"
                     android:textSize="14sp"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    android:inputType="textCapWords"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
@@ -152,11 +95,11 @@
                     android:id="@+id/etDistric"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Châu Đức"
                     android:textSize="14sp"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    android:inputType="textCapWords"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
@@ -180,11 +123,11 @@
                     android:id="@+id/etWard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Bình Gĩa"
                     android:textSize="14sp"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    android:inputType="textCapWords"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
@@ -208,11 +151,11 @@
                     android:id="@+id/etDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hàng 4, ấp Nghi Lộc"
                     android:textSize="14sp"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    android:inputType="textCapWords"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
@@ -220,32 +163,8 @@
                 android:layout_height="1dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginBottom="8dp"
+                android:paddingBottom="20dp"
                 android:background="@color/edit_gray"/>
-
-            <!-- Set as Default Address -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Set as Default Address"
-                    android:textColor="#777"
-                    android:textSize="14sp" />
-                <Switch
-                    android:id="@+id/switch_default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </LinearLayout>
         </LinearLayout>
 
         <!-- Buttons -->
@@ -253,35 +172,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="8dp"
+            android:paddingTop="12dp"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
+            android:paddingBottom="20dp"
             android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_delete"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Delete Address"
-                android:textColor="@color/green"
-                android:background="@drawable/badge_background_trans_border_green"
-                android:padding="12dp" />
-
-            <View
-                android:layout_width="8dp"
-                android:layout_height="match_parent" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_submit"
+                android:id="@+id/btnSubmit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Submit"
                 android:textColor="#FFFFFF"
-                android:background="@drawable/badge_background_green"
-                android:padding="12dp" />
+                android:background="@drawable/badge_background_green" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,8 @@
 package com.TheLa.fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -22,9 +24,8 @@ import com.TheLa.activities.LoginActivity;
 import com.TheLa.activities.MainActivity;
 import com.TheLa.activities.RegisterActivity;
 import com.TheLa.dto.UserDto;
-import com.TheLa.fragments.me.AddressFragment;
+import com.TheLa.fragments.me.ChangeAddressFragment;
 import com.TheLa.fragments.me.ChangeEmailFragment;
-import com.TheLa.fragments.me.ChangeNameFragment;
 import com.TheLa.fragments.me.ChangePasswordFragment;
 import com.TheLa.fragments.me.PaymentHistoryFragment;
 import com.TheLa.fragments.me.PaymentMethodFragment;
@@ -33,9 +34,11 @@ import com.TheLa.utils.AppUtils;
 import com.TheLa.utils.SharedPreferenceManager;
 import com.example.TheLa.R;
 
+import java.io.InputStream;
+
 public class MeFragment extends Fragment {
     private TextView tvUserName, tvEmail;
-    private ImageView editButton;
+    private ImageView editButton, image;
     private FrameLayout cart;
     private AppCompatButton btnLogin, btnSignUp;
     private LinearLayout authButtons, logout, profile, myAddress, email, password, paymentMethod, paymentHistory;
@@ -73,12 +76,13 @@ public class MeFragment extends Fragment {
         cart = view.findViewById(R.id.cart);
         paymentMethod = view.findViewById(R.id.paymentMethod);
         paymentHistory = view.findViewById(R.id.paymentHistory);
+        image = view.findViewById(R.id.image);
     }
 
     private void addEvents() {
         logout.setOnClickListener(v -> logoutClick());
         profile.setOnClickListener(v -> profileClick());
-        myAddress.setOnClickListener(v -> myAddressClick());
+        myAddress.setOnClickListener(v -> addressClick());
         email.setOnClickListener(v -> emailClick());
         password.setOnClickListener(v -> passwordClick());
         btnLogin.setOnClickListener(v -> btnLoginClick());
@@ -94,6 +98,8 @@ public class MeFragment extends Fragment {
             getUser();
             setName();
             setEmail();
+            setImage();
+
             // Ẩn linearlayout chứa button Login, SignUp
             authButtons.setVisibility(View.GONE);
 
@@ -120,7 +126,7 @@ public class MeFragment extends Fragment {
             AppUtils.switchToFragment(this, new CartFragment(), R.id.fragment_me);
         }
 
-        visibleBottomNavigation();
+        BackStackChangedListener();
     }
 
     private void paymentHistoryClick() {
@@ -128,7 +134,7 @@ public class MeFragment extends Fragment {
             AppUtils.switchToFragment(this, new PaymentHistoryFragment(), R.id.fragment_me);
         }
 
-        visibleBottomNavigation();
+        BackStackChangedListener();
     }
 
     private void paymentMethodClick() {
@@ -136,14 +142,14 @@ public class MeFragment extends Fragment {
             AppUtils.switchToFragment(this, new PaymentMethodFragment(), R.id.fragment_me);
         }
 
-        visibleBottomNavigation();
+        BackStackChangedListener();
     }
 
     private void btnLoginClick() {
-        Intent intent = new Intent(requireContext(), LoginActivity.class);
-        startActivity(intent);
+        SwitchToLoginActivity();
     }
 
+    /// Cái này phải sửa để có thể quay về đúng trang me theo Login nha
     private void btnSignUpClick() {
         Intent intent = new Intent(requireContext(), RegisterActivity.class);
         startActivity(intent);
@@ -151,39 +157,27 @@ public class MeFragment extends Fragment {
 
     private void passwordClick() {
         if (handleLoginCheck()) {
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_me, new ChangePasswordFragment())
-                    .addToBackStack("ChangePasswordFragment")
-                    .commit();
+            SwicthToFragment("ChangePasswordFragment", new ChangePasswordFragment());
         }
-
-        visibleBottomNavigation();
+        BackStackChangedListener();
     }
-
-
-    //Dặc biệt sửa
 
     private void emailClick() {
         if (preferenceManager.isLoggedIn()) {
-            AppUtils.setBottomNavigationVisibility(this, false);
-
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_me, new ChangeEmailFragment())
-                    .addToBackStack("ChangeEmailFragment")
-                    .commit();
+            SwicthToFragment("ChangeEmailFragment", new ChangeEmailFragment());
         } else {
-            AppUtils.switchToLoginActivity(getContext());
+            SwitchToLoginActivity();
         }
+
+        BackStackChangedListener();
     }
 
-    private void myAddressClick() {
+    private void addressClick() {
         if (handleLoginCheck()) {
-            AppUtils.switchToFragment(this, new AddressFragment(), R.id.fragment_me);
+            AppUtils.switchToFragment(this, new ChangeAddressFragment(), R.id.fragment_me);
         }
 
-        visibleBottomNavigation();
+        BackStackChangedListener();
     }
 
     private void profileClick() {
@@ -191,8 +185,7 @@ public class MeFragment extends Fragment {
             AppUtils.switchToFragment(this, new ProfileFragment(), R.id.fragment_me);
         }
 
-        visibleBottomNavigation();
-
+        BackStackChangedListener();
     }
 
     private void logoutClick() {
@@ -207,6 +200,28 @@ public class MeFragment extends Fragment {
 
         // Sau khi đăng xuất, hiển thị lại thông tin và các nút Login, Sign Up
         initializeData();
+    }
+
+    //Set ảnh cho user
+    private void setImage() {
+        String imageName = user.getImage(); // Lấy tên ảnh từ user
+
+        if (imageName != null && !imageName.isEmpty()) {
+            // Tìm tài nguyên trong thư mục res/raw
+            int resourceId = getResources().getIdentifier(imageName, "raw", requireContext().getPackageName());
+            if (resourceId != 0) {
+                // Tải ảnh từ res/raw
+                InputStream inputStream = getResources().openRawResource(resourceId);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                image.setImageBitmap(bitmap);
+            } else {
+                // Đặt ảnh mặc định nếu không tìm thấy tài nguyên
+                image.setImageResource(R.drawable.avatar_default);
+            }
+        } else {
+            // Đặt ảnh mặc định nếu tên ảnh không hợp lệ
+            image.setImageResource(R.drawable.avatar_default);
+        }
     }
 
 
@@ -233,24 +248,42 @@ public class MeFragment extends Fragment {
     private boolean handleLoginCheck() {
         SharedPreferenceManager preferenceManager = new SharedPreferenceManager(getContext());
         if (!preferenceManager.isLoggedIn()) {
-            Toast.makeText(getContext(), "Đăng nhập ngay để tiếp tục trải nghiệm thú vị nào!", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> {
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                intent.putExtra("previousPage", "me"); // Ghi lại trang trước đó
-                startActivity(intent);
-            }, 2000); // Trì hoãn 2000ms
-            AppUtils.setBottomNavigationVisibility(this, false);
+            SwitchToActivityLoginDelay();
             return false;
         }
         return true;
     }
 
-    private void visibleBottomNavigation() {
+    private void SwitchToActivityLoginDelay() {
+        Toast.makeText(getContext(), "Đăng nhập ngay để tiếp tục trải nghiệm thú vị nào!", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(this::SwitchToLoginActivity, 2000); // Trì hoãn 2000ms
+    }
+
+    private void SwitchToLoginActivity() {
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        intent.putExtra("previousPage", "me"); // Ghi lại trang trước đó
+        startActivity(intent);
+    }
+
+    private void SwicthToFragment(String name, Fragment fragment) {
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_me, fragment)
+                .addToBackStack(name)
+                .commit();
+    }
+
+    private void BackStackChangedListener() {
         // Ẩn BottomNavigationView
         ((MainActivity) getActivity()).setBottomNavigationVisibility(false);
 
         // Lắng nghe sự kiện quay lại để hiển thị lại BottomNavigationView
         getParentFragmentManager().addOnBackStackChangedListener(() -> {
+
+            if (isVisible()) { // Kiểm tra nếu `MeFragment` đang hiển thị
+                initializeData(); // Làm mới dữ liệu
+            }
+
             if (getParentFragmentManager().getBackStackEntryCount() == 0) {
                 ((MainActivity) requireActivity()).setBottomNavigationVisibility(true);
             }

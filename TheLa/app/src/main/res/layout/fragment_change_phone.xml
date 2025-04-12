@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:gravity="center_vertical"
-                android:text="Change Name"
+                android:text="Change Phone"
                 android:textSize="16sp"
                 android:paddingLeft="20dp"
                 android:fontFamily="sans-serif"
@@ -58,11 +58,11 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <EditText
-                android:id="@+id/etName"
+                android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name"
-                android:drawableStart="@drawable/ic_account_1"
+                android:hint="Phone Number"
+                android:drawableStart="@drawable/ic_phone_2"
                 android:paddingTop="32dp"
                 android:drawablePadding="12dp"
                 android:paddingBottom="18dp"

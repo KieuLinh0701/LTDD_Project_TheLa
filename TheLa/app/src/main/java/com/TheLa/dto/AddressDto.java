@@ -8,10 +8,6 @@ public class AddressDto implements Serializable {
     private static final long serialVersionUID = 1L;
     @SerializedName("addressId")
     private Long addressId;
-    @SerializedName("name")
-    private String name;
-    @SerializedName("phone")
-    private String phone;
     @SerializedName("city")
     private String city;
     @SerializedName("district")
@@ -20,6 +16,21 @@ public class AddressDto implements Serializable {
     private String commune;
     @SerializedName("detail")
     private String detail;
+
+    public AddressDto(String city, String district, String commune, String detail) {
+        this.city = city;
+        this.commune = commune;
+        this.detail = detail;
+        this.district = district;
+    }
+
+    public AddressDto(Long addressId, String city, String district, String commune, String detail) {
+        this.addressId = addressId;
+        this.city = city;
+        this.commune = commune;
+        this.detail = detail;
+        this.district = district;
+    }
 
     public Long getAddressId() {
         return addressId;
@@ -59,21 +70,5 @@ public class AddressDto implements Serializable {
 
     public void setDistrict(String district) {
         this.district = district;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }

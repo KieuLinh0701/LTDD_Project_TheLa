@@ -1,5 +1,6 @@
 package com.TheLa.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -41,8 +42,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         email = getIntent().getStringExtra("email");
         feature = getIntent().getStringExtra("feature");
-
-
 
         addEvents();
     }
@@ -138,12 +137,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     } else if ("ChangePassword".equals(feature)) {
                         Toast.makeText(ForgotPasswordActivity.this, "Thay đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
                         binding.getRoot().postDelayed(() -> {
-                            MeFragment meFragment = new MeFragment();
-                            getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.activity_forgotPassword, meFragment)
-                                    .commit();
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("action", "backToMeFragment");
+                            setResult(Activity.RESULT_OK, resultIntent);
+                            finish();
                         }, 2000);
-                        AppUtils.setBottomNavigationVisibility(ForgotPasswordActivity.this, true);
                     }
                 } else {
                     try {

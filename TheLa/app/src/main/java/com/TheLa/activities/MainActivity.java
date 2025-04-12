@@ -4,6 +4,7 @@ package com.TheLa.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -113,23 +114,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
         String navigateTo = intent.getStringExtra("navigateTo");
-        if (navigateTo != null) {
-            switch (navigateTo) {
-                case "orders":
-                    viewPager.setCurrentItem(2); // Chuyển đến tab "Orders"
-                    break;
-                case "store":
-                    viewPager.setCurrentItem(1); // Chuyển đến tab "Store"
-                    break;
-                case "home":
-                    viewPager.setCurrentItem(0); // Chuyển đến tab "Home"
-                    break;
-                case "me":
-                    viewPager.setCurrentItem(3); // Chuyển đến tab "Me"
-                    break;
-            }
+        Log.e("navigateTo", navigateTo);
+        switch (navigateTo) {
+            case "orders":
+                viewPager.setCurrentItem(2, true); // Chuyển tab với hiệu ứng
+                break;
+            case "store":
+                viewPager.setCurrentItem(1, true);
+                break;
+            case "home":
+                viewPager.setCurrentItem(0, true);
+                break;
+            case "me":
+                viewPager.setCurrentItem(3, true);
+                break;
+            default:
+                viewPager.setCurrentItem(0, true); // Nếu giá trị không hợp lệ, chuyển về Home
+                break;
         }
     }
 

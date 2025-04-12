@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import com.TheLa.Api.ApiResponse;
 import com.TheLa.Api.UserApi;
 import com.TheLa.activities.VerificationAccountActivity;
 import com.TheLa.dto.UserDto;
-import com.TheLa.utils.AppUtils;
 import com.TheLa.utils.SharedPreferenceManager;
 import com.example.TheLa.R;
 import com.google.gson.Gson;
@@ -59,12 +57,12 @@ public class ChangePasswordFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
             if (data != null && "backToMeFragment".equals(data.getStringExtra("action"))) {
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                // Xóa ChangePasswordFragment khỏi stack
-                fragmentManager.popBackStack("ChangePasswordFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-                AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
+                requireActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                Log.e("Khng", "Không");
             }
+        } else {
+            Log.e("có", "có");
         }
     }
 
@@ -93,10 +91,13 @@ public class ChangePasswordFragment extends Fragment {
     private void setupButtonBack() {
         btnBack.setOnClickListener(v -> {
             if (isAdded()) {
-                requireActivity().getSupportFragmentManager().popBackStack();
-                AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
+                BackFragment();
             }
         });
+    }
+
+    private void BackFragment() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void getUser() {
@@ -124,14 +125,7 @@ public class ChangePasswordFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(getContext(), "Vui lòng kiểm tra email của bạn và nhập mã OTP để hoàn tất xác thực!", Toast.LENGTH_SHORT).show();
-                    requireView().postDelayed(() -> {
-                        if (isFragmentActive) {
-                            Intent intent = new Intent(requireContext(), VerificationAccountActivity.class);
-                            intent.putExtra("email", user.getEmail());
-                            intent.putExtra("feature", "ChangePassword");
-                            startActivityForResult(intent, 100);
-                        }
-                    }, 2000);
+                    SwitchToVerificationAccount();
                 } else {
                     try {
                         ApiResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
@@ -146,7 +140,6 @@ public class ChangePasswordFragment extends Fragment {
                     }
                     Log.d("MeFragment", "Gửi email xác thực tài khoản thất bại: " + response.message());
                     requireActivity().getSupportFragmentManager().popBackStack();
-                    AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
                 }
             }
 
@@ -156,9 +149,20 @@ public class ChangePasswordFragment extends Fragment {
 
                 Log.e("MeFragment", "Lỗi khi gọi API: " + t.getMessage());
                 requireActivity().getSupportFragmentManager().popBackStack();
-                AppUtils.setBottomNavigationVisibility(ChangePasswordFragment.this, true);
             }
         });
+    }
+
+    private void SwitchToVerificationAccount() {
+        requireView().postDelayed(() -> {
+            if (isFragmentActive) {
+                Intent intent = new Intent(requireContext(), VerificationAccountActivity.class);
+                intent.putExtra("email", user.getEmail());
+                intent.putExtra("feature", "ChangePassword");
+                startActivityForResult(intent, 100);
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        }, 2000);
     }
 
 }

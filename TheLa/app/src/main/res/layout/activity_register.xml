@@ -79,7 +79,7 @@
             android:textColor="@color/black"
             android:fontFamily="sans-serif"
             android:singleLine="true"
-            android:inputType="textCapSentences|textAutoCorrect" />
+            android:inputType="textCapWords" />
 
         <EditText
             android:id="@+id/etEmail"

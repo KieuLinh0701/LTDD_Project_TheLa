@@ -190,9 +190,13 @@ public class LoginActivity extends AppCompatActivity {
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
             if (previousPage != null) {
+                Log.e("Login Activity", previousPage);
                 intent.putExtra("navigateTo", previousPage); // Gửi thông tin về trang cần chuyển đến
+            } else {
+                Log.e("Login Activity", "Không có");
             }
             startActivity(intent);
         }, 0);

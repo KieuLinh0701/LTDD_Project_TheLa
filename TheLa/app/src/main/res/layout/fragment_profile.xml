@@ -55,10 +55,11 @@
             android:background="@color/green">
 
             <ImageView
+                android:id="@+id/ivImage"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/avatar_default"
-                android:background="@drawable/circle_background"
+                android:background="@drawable/circle_background_transparent"
                 android:scaleType="centerCrop" />
 
             <LinearLayout
@@ -153,7 +154,67 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:gravity="center_vertical"
+            android:background="@color/white">
+
+            <!-- Icon bên trái -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_phone"
+                android:contentDescription="icon"/>
+
+            <!-- Text ở giữa -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Phone"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:background="#FAFAFA"
+                android:padding="10dp"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/tvPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set Now"
+                android:textColor="@color/dark_gray"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:gravity="center_vertical" />
+
+
+            <!-- Icon bên phải -->
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_more"
+                android:contentDescription="more"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="#D9D9D9"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </LinearLayout>
-
-
 </FrameLayout>

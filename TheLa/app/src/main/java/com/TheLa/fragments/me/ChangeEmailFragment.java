@@ -51,7 +51,6 @@ public class ChangeEmailFragment extends Fragment {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 // Xóa ChangePasswordFragment khỏi stack (nếu có)
                 fragmentManager.popBackStack("ChangeEmailFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
                 // Quay lại Fragment trước đó
                 getActivity().getSupportFragmentManager().popBackStack();
             }
@@ -109,7 +108,6 @@ public class ChangeEmailFragment extends Fragment {
     }
 
     private void ivBackClick() {
-        AppUtils.setBottomNavigationVisibility(this, true);
         requireActivity().getSupportFragmentManager().popBackStack();
     }
 
@@ -122,13 +120,9 @@ public class ChangeEmailFragment extends Fragment {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(getContext(), "Vui lòng kiểm tra email của bạn và nhập mã OTP để hoàn tất xác thực!", Toast.LENGTH_SHORT).show();
-                    requireView().postDelayed(() -> {
-                        Intent intent = new Intent(requireContext(), VerificationAccountActivity.class);
-                        intent.putExtra("email", newEmail);
-                        intent.putExtra("feature", "ChangeEmail");
-                        startActivityForResult(intent, 100);
-                    }, 2000);
+
+                    SwitchToVerificationAccount(newEmail);
+
                 } else {
                     try {
                         ApiResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
@@ -153,6 +147,16 @@ public class ChangeEmailFragment extends Fragment {
         });
     }
 
+    private void SwitchToVerificationAccount(String newEmail) {
+        Toast.makeText(getContext(), "Vui lòng kiểm tra email của bạn và nhập mã OTP để hoàn tất xác thực!", Toast.LENGTH_SHORT).show();
+        requireView().postDelayed(() -> {
+            Intent intent = new Intent(requireContext(), VerificationAccountActivity.class);
+            intent.putExtra("email", newEmail);
+            intent.putExtra("feature", "ChangeEmail");
+            startActivityForResult(intent, 100);
+        }, 2000);
+    }
+
     private boolean isValidInput(String email) {
         if (email.isEmpty()) {
             etEmail.setError("Vui lòng nhập email!");
@@ -161,6 +165,9 @@ public class ChangeEmailFragment extends Fragment {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Email không hợp lệ!");
             etEmail.requestFocus();
+            return false;
+        } else if (email.equals(user.getEmail())) {
+            Toast.makeText(getContext(), "Email mới không được trùng với email hiện tại. Vui lòng nhập một email khác!", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

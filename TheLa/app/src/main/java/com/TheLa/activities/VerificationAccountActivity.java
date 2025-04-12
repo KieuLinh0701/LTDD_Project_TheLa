@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -41,7 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class VerificationAccountActivity extends AppCompatActivity {
-    private int otpDuration = Constant.OTP_DURATION;
+    private final int otpDuration = Constant.OTP_DURATION;
     ActivityVerificationAccountBinding binding;
     EditText[] otpInputs;
     String feature, email;
@@ -49,6 +50,18 @@ public class VerificationAccountActivity extends AppCompatActivity {
     private TextView tvTime, tvSendEmail;
     private UserDto user;
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            if (data != null && "backToMeFragment".equals(data.getStringExtra("action"))) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("action", "backToMeFragment");
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -201,7 +214,7 @@ public class VerificationAccountActivity extends AppCompatActivity {
             startActivity(intent);
         } else if ("ChangePassword".equals(feature)) {
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("action", "backToMeFragment"); // Thông báo xóa ChangePasswordFragment
+            resultIntent.putExtra("action", "backToMeFragment");
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         } else if ("ChangeEmail".equals(feature)) {
@@ -264,13 +277,22 @@ public class VerificationAccountActivity extends AppCompatActivity {
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 Log.d("VerifyAccountActivity", "API phản hồi với mã: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
-                    if ("ForgotPassword".equals(feature) || "ChangePassword".equals(feature)) {
+                    if ("ForgotPassword".equals(feature)) {
                         Toast.makeText(VerificationAccountActivity.this, "Xác thực thành công! Đang chuyển hướng...", Toast.LENGTH_SHORT).show();
                         binding.getRoot().postDelayed(() -> {
                             Intent intent = new Intent(VerificationAccountActivity.this, ForgotPasswordActivity.class);
                             intent.putExtra("email", email);
                             intent.putExtra("feature", feature);
                             startActivity(intent);
+                            finish();
+                        }, 2000);
+                    } if ("ChangePassword".equals(feature)) {
+                        Toast.makeText(VerificationAccountActivity.this, "Xác thực thành công! Đang chuyển hướng...", Toast.LENGTH_SHORT).show();
+                        binding.getRoot().postDelayed(() -> {
+                            Intent intent = new Intent(VerificationAccountActivity.this, ForgotPasswordActivity.class);
+                            intent.putExtra("email", email);
+                            intent.putExtra("feature", feature);
+                            startActivityForResult(intent, 100);
                             finish();
                         }, 2000);
                     } else if ("Register".equals(feature)) {

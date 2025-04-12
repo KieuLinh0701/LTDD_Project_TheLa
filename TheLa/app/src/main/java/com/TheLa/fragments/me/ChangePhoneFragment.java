@@ -1,14 +1,7 @@
 package com.TheLa.fragments.me;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +9,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
+
 import com.TheLa.Api.ApiClient;
 import com.TheLa.Api.ApiResponse;
 import com.TheLa.Api.UserApi;
-import com.TheLa.activities.VerificationAccountActivity;
 import com.TheLa.dto.UserDto;
 import com.TheLa.utils.SharedPreferenceManager;
 import com.example.TheLa.R;
@@ -31,17 +26,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangeNameFragment extends Fragment {
+public class ChangePhoneFragment extends Fragment {
 
     private ImageView ivBack;
     private AppCompatButton btnNext;
-    private EditText etName;
+    private EditText etPhone;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_change_name, container, false);
+        View view = inflater.inflate(R.layout.fragment_change_phone, container, false);
 
         initialViews(view);
 
@@ -53,7 +48,7 @@ public class ChangeNameFragment extends Fragment {
     private void initialViews(View view) {
         ivBack = view.findViewById(R.id.ivBack);
         btnNext = view.findViewById(R.id.btnNext);
-        etName = view.findViewById(R.id.etName);
+        etPhone = view.findViewById(R.id.etPhone);
     }
 
     private void addEvents() {
@@ -68,22 +63,22 @@ public class ChangeNameFragment extends Fragment {
     private void CallAPISaveUser() {
         UserApi userApi = ApiClient.getRetrofitInstance().create(UserApi.class);
 
-        String name = etName.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
 
         UserDto user = getUser();
 
-        if (!isValidInput(name, user.getName())) {
+        if (!isValidInput(phone, user.getPhone())) {
             return;
         }
 
-        user.setName(name);
+        user.setPhone(phone);
 
         Call<ApiResponse> call = userApi.save(user);
 
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                Log.d("ChangeNameFragment", "API phản hồi với mã: " + response.code());
+                Log.d("ChangeFragment", "API phản hồi với mã: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
                     saveUser(user);
 
@@ -105,25 +100,29 @@ public class ChangeNameFragment extends Fragment {
                         e.printStackTrace();
                         Toast.makeText(getContext(), "Thay đổi thất bại!", Toast.LENGTH_SHORT).show();
                     }
-                    Log.d("ChangeNameFragment", "Thay đổi thất bại!" + response.message());
+                    Log.d("ChangePhoneFragment", "Thay đổi thất bại!" + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Log.e("ChangeNameFragment", "Lỗi khi gọi API: " + t.getMessage());
+                Log.e("ChangePhoneFragment", "Lỗi khi gọi API: " + t.getMessage());
                 Toast.makeText(getContext(), "Lỗi kết nối, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private boolean isValidInput(String name, String oldName) {
-        if (name.isEmpty()) {
-            etName.setError("Vui lòng nhập tên!");
-            etName.requestFocus();
+    private boolean isValidInput(String phone, String oldPhone) {
+        if (phone.isEmpty()) {
+            etPhone.setError("Vui lòng nhập số điện thoại!");
+            etPhone.requestFocus();
             return false;
-        } else if (name.equals(oldName)) {
-            Toast.makeText(getContext(), "Tên mới không được trùng với tên hiện tại. Vui lòng chọn một tên khác!", Toast.LENGTH_SHORT).show();
+        } else if (!phone.matches("^[0-9]{10}$")) { // Kiểm tra số điện thoại chỉ chứa đúng 10 chữ số
+            etPhone.setError("Số điện thoại không hợp lệ. Vui lòng nhập đúng 10 chữ số!");
+            etPhone.requestFocus();
+            return false;
+        }else if (phone.equals(oldPhone)) {
+            Toast.makeText(getContext(), "Số điện thoại mới không được trùng với số điện thoại hiện tại. Vui lòng chọn một số khác!", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
